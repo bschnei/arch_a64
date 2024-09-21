@@ -40,7 +40,7 @@ sed -i "s|^pkgrel=.*$|pkgrel=1|g" PKGBUILD
 sed -i "s|^sha256sums=(.*$|sha256sums=('${new_sha256sum}'|g" PKGBUILD
 
 # clean build the new package
-makepkg --force --cleanbuild --syncdeps --rmdeps --noconfirm
+makepkg --force --cleanbuild
 
 # add updated config to the package
 cp "src/linux-${latest}/.config" config
