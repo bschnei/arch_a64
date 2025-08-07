@@ -29,6 +29,7 @@ if git ls-remote --quiet "${fork_url}" > /dev/null 2>&1; then
   git push
   git checkout aarch64
   if ! git rebase main aarch64; then exit; fi
+  git push --force
 else
   git clone "${upstream_url}"
   cd "${gitname}" || exit
