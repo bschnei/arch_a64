@@ -21,17 +21,20 @@ rm -rf -- "${gitname}"
 # if a fork of this package exists...
 if git ls-remote --quiet "${fork_url}" > /dev/null 2>&1; then
   git clone "${fork_url}"
-  git -C "${gitname}" remote add upstream "${upstream_url}"
-  git -C "${gitname}" fetch --all --tags
-  git -C "${gitname}" merge upstream/main
-  git -C "${gitname}" push
-  git -C "${gitname}" checkout aarch64
-  if ! git -C "${gitname}" rebase main aarch64; then exit; fi
+  cd "${gitname}" || exit
+  
+  git remote add upstream "${upstream_url}"
+  git fetch --all --tags
+  git merge upstream/main
+  git push
+  git checkout aarch64
+  if ! git rebase main aarch64; then exit; fi
 else
   git clone "${upstream_url}"
+  cd "${gitname}" || exit
   
   # for each commit made after $gitref...
-  for commit in $(git rev-list --reverse "${gitref}.."); do
+  for commit in $(git rev-list --reverse ${gitref}..); do
     # if it has a tag, stop
     if git describe --exact-match "${commit}"; then break;
     else
@@ -41,10 +44,8 @@ else
     fi
   done
 
-  git -C "${gitname}" checkout "${gitref}"
+  git -c advice.detachedHead=false checkout "${gitref}"
 fi
-
-cd "${gitname}" || exit
 
 # import any signing keys
 gpg --quiet --import keys/pgp/*.asc > /dev/null 2>&1
