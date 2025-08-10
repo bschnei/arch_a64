@@ -48,6 +48,8 @@ else
   git -c advice.detachedHead=false checkout "${gitref}"
 fi
 
+arch-nspawn "${chroot_path}/root" pacman -Syu
+
 # import any signing keys
 gpg --quiet --import keys/pgp/*.asc > /dev/null 2>&1
 
