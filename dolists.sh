@@ -54,6 +54,6 @@ for (( i=0; i<${#pkgrepos[@]}; i++ )); do
   repo=${pkgrepos[i]}
   ref=${pkgrefs[i]}
 
-  bash "${script_dir}/pkgrepos/stage.sh" "${repo}" "${ref}"
+  bash "${script_dir}/stage.sh" "${repo}" "${ref}"
 
 done
