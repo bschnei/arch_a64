@@ -4,6 +4,7 @@ script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(re
 readonly script_dir
 
 chroot_path="${script_dir}/chroot"
+#chroot_path="${script_dir}/cr-noalarm"
 srcrepos_path="${script_dir}/srcrepos"
 pkgrepos_path="${script_dir}/pkgrepos"
 readonly chroot_path srcrepos_path pkgrepos_path 
@@ -48,7 +49,7 @@ else
   git -c advice.detachedHead=false checkout "${gitref}"
 fi
 
-arch-nspawn "${chroot_path}/root" pacman -Syu
+arch-nspawn "${chroot_path}/root" pacman -Syu --noconfirm
 
 # import any signing keys
 gpg --quiet --import keys/pgp/*.asc > /dev/null 2>&1
