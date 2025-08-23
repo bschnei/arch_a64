@@ -17,13 +17,13 @@ fi
 pkgrepos=()
 pkgrefs=()
 
-# for each package on the remove list...
-while IFS= read -r line; do
-
-  pkgname=$(echo ${line} | awk '{print $1}')
-  bash "${script_dir}/pkgrepos/unstage.sh" "${pkgname}"
-
-done < <(grep -v "^#" "${script_dir}/pkglist.remove" | grep -v "^$")
+# unstage packages on the remove list...
+if [ -f "${script_dir}/pkglist.remove" ]; then
+  while IFS= read -r line; do
+    pkgname=$(echo ${line} | awk '{print $1}')
+    bash "${script_dir}/pkgrepos/unstage.sh" "${pkgname}"
+  done < <(grep -v "^#" "${script_dir}/pkglist.remove" | grep -v "^$")
+fi
 
 # for each package on the update list...
 while IFS= read -r line; do
