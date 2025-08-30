@@ -48,6 +48,12 @@ git push
 git tag "${latest}-1"
 git push --tags
 
+# add to staging package repo
+for pkg in *.pkg.tar.*; do
+  mv "${pkg}" "${pkgrepos_path}/staging"
+  repo-add --remove "${pkgrepos_path}/staging/staging.db.tar.gz" "${pkgrepos_path}/staging/${pkg}"
+done
+
 # remove build artifacts
 cd "${srcrepos_path}" || exit
 rm -rf -- "${pkgname}"
