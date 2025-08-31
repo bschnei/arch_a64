@@ -60,9 +60,9 @@ The absence of LSE support is known to cause issues building certain packages:
 - [x] build all packages in `base` and `base-devel`
 - [ ] rebuild kernel config and keep audit trail of changes 
 
-# packages that won't build but are needed to build one or more packages in `base`
+### packages that won't build but are needed to build one or more packages in `base`
 
-- java-environment
-- ncompress
-- zip
+- java-openjdk ([FTBFS](https://bugs.openjdk.org/browse/JDK-8354941?focusedId=14788005&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel) and needs mods)
+- ncompress (FTBFS likely gcc 15 related)
+- zip (FTBFS)
 
