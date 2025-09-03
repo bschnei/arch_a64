@@ -54,13 +54,17 @@ Because extensions _add_ new features to the instruction set, programs compiled 
 
 The absence of LSE support is known to cause issues building certain packages:
 - [qt6-webengine](https://gitlab.archlinux.org/archlinux/packaging/packages/qt6-webengine)
+  - Qt uses the Raspberry Pi 5 (ARMv8.2-A) as their [reference arm64 platform](https://doc.qt.io/qt-6.8/supported-platforms.html#linux-on-arm-desktop-support)
+  - https://wiki.qt.io/RaspberryPiWithQt6WebEngine
 
-## Stuff to do
+## To do
 
 - [x] build all packages in `base` and `base-devel`
+- [x] build other packages that I actively use
+- [ ] build packages need to build the packages above
 - [ ] rebuild kernel config and keep audit trail of changes 
 
-### packages that won't build but are needed to build one or more packages in `base`
+### packages that won't build
 
 - java-openjdk ([FTBFS](https://bugs.openjdk.org/browse/JDK-8354941?focusedId=14788005&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel) and needs mods)
 - ncompress (FTBFS likely gcc 15 related)
