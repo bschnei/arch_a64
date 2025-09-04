@@ -2,10 +2,9 @@
 These scripts are used to maintain a few [Arch Linux](https://archlinux.org/) packages built for the [ARMv8-A instruction set](https://en.wikipedia.org/wiki/ARMv8-A).
 
 ## ARM Instruction Sets
-
 ARMv8-A is the first version of the ARM architecture to support 64-bit instructions. There have been multiple extensions of the v8 instruction set. These are indicated by a minor version number (ARMv8.1-A, ARMv8.2-A, etc.). For example, the [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) uses the [Cortex-A72](https://en.wikipedia.org/wiki/ARM_Cortex-A72) which uses the ARMv8-A instruction set, while the [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5/) uses the [Cortex-A76](https://en.wikipedia.org/wiki/ARM_Cortex-A76) which includes ARMv8.2-A extensions.
 
-This [table](https://en.wikipedia.org/wiki/Template:Application_ARM-based_chips) is a helpful reference for understanding which products and CPUs use which version. But be aware that a CPU advertised as being a certain model may have different features depending on the date it was manufactured and/or its purpose in the final product. `lscpu` can provide helpful information for determining exactly what features/flags are supported by--as well as what _issues_ might affect--a specific CPU. Sample output for a Cortex-A53 (ARMv8-A):
+This [table](https://en.wikipedia.org/wiki/Template:Application_ARM-based_chips) is a helpful reference for understanding which products and CPUs use which version. But be aware that a CPU advertised as being a certain model may have different features depending on the date it was manufactured and/or its purpose in the final product. `lscpu` can provide helpful information for determining exactly what features/flags are supported by---as well as what _issues_ might affect---a specific CPU. Sample output for a Cortex-A53 (ARMv8-A):
 
 ```
 Architecture:                aarch64
@@ -64,7 +63,7 @@ The absence of LSE support is known to cause issues building certain packages:
 - [ ] build packages need to build the packages above
 - [ ] rebuild kernel config and keep audit trail of changes 
 
-### packages that won't build
+### packages that aren't buildling
 
 - java-openjdk ([FTBFS](https://bugs.openjdk.org/browse/JDK-8354941?focusedId=14788005&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel) and needs mods)
 - ncompress (FTBFS likely gcc 15 related)
