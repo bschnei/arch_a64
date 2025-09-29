@@ -13,24 +13,24 @@ if [ -f "${script_dir}/pkglist.remove" ]; then
   cat "${script_dir}/pkglist.remove"
 fi
 
-# array of PKGBUILD repos and tags we want to build
-pkgrepos=()
-pkgrefs=()
-
 # unstage packages on the remove list...
-if [ -f "${script_dir}/pkglist.remove" ]; then
-  while IFS= read -r line; do
-    pkgname=$(echo ${line} | awk '{print $1}')
-    bash "${script_dir}/pkgrepos/unstage.sh" "${pkgname}"
-  done < <(grep -v "^#" "${script_dir}/pkglist.remove" | grep -v "^$")
-fi
+#if [ -f "${script_dir}/pkglist.remove" ]; then
+#  while IFS= read -r line; do
+#    pkgname=$(echo ${line} | awk '{print $1}')
+#    bash "${script_dir}/pkgrepos/unstage.sh" "${pkgname}"
+#  done < <(grep -v "^#" "${script_dir}/pkglist.remove" | grep -v "^$")
+#fi
+
+pkgrepos=()
+pkgbases=()
+pkgrefs=()
 
 # for each package on the update list...
 while IFS= read -r line; do
 
-  pkgname=$(echo ${line} | awk '{print $1}')
-  pkgver=$(echo ${line} | awk '{print $2}')
-  pkgref=$(echo "${pkgver}" | tr : -)
+  pkgrepo=$(echo ${line} | awk '{print $1}')
+  pkgname=$(echo ${line} | awk '{print $2}')
+  pkgref=$(echo ${line} | awk '{print $3}')
 
   # map a package name to its base package
   pkgbase=$(pacman -Sdd "${pkgname}" --print-format %e 2>/dev/null)
@@ -43,17 +43,15 @@ while IFS= read -r line; do
     continue
   fi
 
-  pkgrepos+=("${pkgbase}")
+  pkgrepos+=("${pkgrepo}")
+  pkgbases+=("${pkgbase}")
   pkgrefs+=("${pkgref}")
 
 done < <(grep -v "^#" "${script_dir}/pkglist.update" | grep -v "^$")
 
-# for each PKGBUILD repo that we want to build
+# for each pkgbase git repo that we want to build
 for (( i=0; i<${#pkgrepos[@]}; i++ )); do
 
-  repo=${pkgrepos[i]}
-  ref=${pkgrefs[i]}
-
-  bash "${script_dir}/stage.sh" "${repo}" "${ref}"
+  bash "${script_dir}/stage.sh" "${pkgrepos[i]}" "${pkgbases[i]}" "${pkgrefs[i]}"
 
 done
