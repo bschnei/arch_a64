@@ -3,7 +3,7 @@
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit; pwd)
 readonly script_dir
 
-repo="${1-extra}"
+repo="${1}"
 pkgbase="${2}"
 gitref="${3-main}"
 
