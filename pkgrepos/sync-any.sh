@@ -3,8 +3,20 @@
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit; pwd)
 readonly script_dir
 
-rsync -Lavh --delete "rsync://berlin.mirror.pkgbuild.com/packages/core/os/x86_64/*-any.pkg.tar*" "${script_dir}/core-staging/"
-bash "${script_dir}/rebuild.sh" "core-staging"
+repo=core
+pkgrepo_path="${script_dir}/${repo}-staging"
+filelist=$(rsync -Lav --delete --dry-run --exclude aarch64-* "rsync://berlin.mirror.pkgbuild.com/packages/${repo}/os/x86_64/*-any.pkg.tar.zst" "${pkgrepo_path}/" | head -n -3 | tail -n +2)
 
-rsync -Lavh --delete --exclude aarch64-* "rsync://berlin.mirror.pkgbuild.com/packages/extra/os/x86_64/*-any.pkg.tar*" "${script_dir}/extra-staging/"
-bash "${script_dir}/rebuild.sh" "extra-staging"
+rsync -Lavh --delete --exclude aarch64-* "rsync://berlin.mirror.pkgbuild.com/packages/${repo}/os/x86_64/*-any.pkg.tar.*" "${pkgrepo_path}/"
+for file in ${filelist}; do
+  repo-add --remove "${pkgrepo_path}/${repo}-staging.db.tar.gz" "${pkgrepo_path}/${file}"
+done
+
+repo=extra
+pkgrepo_path="${script_dir}/${repo}-staging"
+filelist=$(rsync -Lav --delete --dry-run --exclude aarch64-* "rsync://berlin.mirror.pkgbuild.com/packages/${repo}/os/x86_64/*-any.pkg.tar.zst" "${pkgrepo_path}/" | head -n -3 | tail -n +2)
+
+rsync -Lavh --delete --exclude aarch64-* "rsync://berlin.mirror.pkgbuild.com/packages/${repo}/os/x86_64/*-any.pkg.tar.*" "${pkgrepo_path}/"
+for file in ${filelist}; do
+  repo-add --remove "${pkgrepo_path}/${repo}-staging.db.tar.gz" "${pkgrepo_path}/${file}"
+done
