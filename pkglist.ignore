@@ -1,0 +1,17 @@
+# not relevant
+aarch64-linux-gnu-glibc
+aarch64-linux-gnu-linux-api-headers
+syslinux
+
+# not packaging yet
+gcc-ada
+linux-lts
+linux-lts-docs
+linux-lts-headers
+openssl-1.1
+vi
+
+# not packaging
+lib32-gcc-libs
+lib32-glibc
+

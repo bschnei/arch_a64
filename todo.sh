@@ -12,7 +12,7 @@ extra_a64=$(tar -tvzf ${script_dir}/pkgrepos/extra/extra.db.tar.gz | grep -e "^d
 core_staging_a64=$(tar -tvzf ${script_dir}/pkgrepos/core-staging/core-staging.db.tar.gz | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
 extra_staging_a64=$(tar -tvzf ${script_dir}/pkgrepos/extra-staging/extra-staging.db.tar.gz | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
 
-rm -f pkglist.update pkglist.remove pkglist.ahead
+rm -f todo.update todo.remove todo.ahead
 
 echo "Checking packages in [core]..."
 for line in ${core_a64}; do
@@ -24,7 +24,7 @@ for line in ${core_a64}; do
   staged=$(echo ${core_staging_a64} | tr " " "\n" | grep -E -m 1 "^${pattern}-[^-]+-[^-]+$" | sed -E "s/^${pattern}-//")
 
   if [ -z $latest ]; then
-    echo "core ${pkgname}" >> pkglist.remove
+    echo "core ${pkgname}" >> todo.remove
     continue
   fi
 
@@ -34,10 +34,10 @@ for line in ${core_a64}; do
       echo "  ${pkgname} ${staged} is staged"
     else
       echo "  ${pkgname} ${pkgver} => ${latest}"
-      echo "core ${pkgname} ${latest}" >> pkglist.update
+      echo "core ${pkgname} ${latest}" >> todo.update
     fi
   elif [ $state -lt 0 ]; then
-    echo "${pkgname} ${pkgver} > ${latest}" >> pkglist.ahead
+    echo "${pkgname} ${pkgver} > ${latest}" >> todo.ahead
   fi
 
 done
@@ -52,7 +52,7 @@ for line in ${extra_a64}; do
   staged=$(echo ${extra_staging_a64} | tr " " "\n" | grep -E -m 1 "^${pattern}-[^-]+-[^-]+$" | sed -E "s/^${pattern}-//")
 
   if [ -z $latest ]; then
-    echo "extra ${pkgname}" >> pkglist.remove
+    echo "extra ${pkgname}" >> todo.remove
     continue
   fi
 
@@ -62,10 +62,10 @@ for line in ${extra_a64}; do
       echo "  ${pkgname} ${staged} is staged"
     else
       echo "  ${pkgname} ${pkgver} => ${latest}"
-      echo "extra ${pkgname} ${latest}" >> pkglist.update
+      echo "extra ${pkgname} ${latest}" >> todo.update
     fi
   elif [ $state -lt 0 ]; then
-    echo "${pkgname} ${pkgver} > ${latest}" >> pkglist.ahead
+    echo "${pkgname} ${pkgver} > ${latest}" >> todo.ahead
   fi
 
 done

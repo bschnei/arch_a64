@@ -3,23 +3,23 @@
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit; pwd)
 readonly script_dir
 
-if [ ! -f "${script_dir}/pkglist.update" ]; then exit; fi
-
-echo "Packages to update:"
-cat "${script_dir}/pkglist.update"
-
-if [ -f "${script_dir}/pkglist.remove" ]; then
-  echo "Packages to remove:"
-  cat "${script_dir}/pkglist.remove"
+# unstage packages on the todo.remove list...
+if [ -f "${script_dir}/todo.remove" ]; then
+  echo "The following packages will be removed:"
+  sed 's/^/  /' "${script_dir}/todo.remove"
+  read -s -n 1 -p "Press any key to continue..."
+  echo -e "\n" 
+ 
+  while IFS= read -r line; do
+    pkgrepo=$(echo ${line} | awk '{print $1}')
+    pkgname=$(echo ${line} | awk '{print $2}')
+    bash "${script_dir}/pkgrepos/unstage.sh" "${pkgrepo}" "${pkgname}"
+  done < <(grep -v "^#" "${script_dir}/todo.remove" | grep -v "^$")
 fi
 
-# unstage packages on the remove list...
-#if [ -f "${script_dir}/pkglist.remove" ]; then
-#  while IFS= read -r line; do
-#    pkgname=$(echo ${line} | awk '{print $1}')
-#    bash "${script_dir}/pkgrepos/unstage.sh" "${pkgname}"
-#  done < <(grep -v "^#" "${script_dir}/pkglist.remove" | grep -v "^$")
-#fi
+rm -f -- "${script_dir}/todo.remove"
+
+if [ ! -f "${script_dir}/todo.update" ]; then exit; fi
 
 pkgrepos=()
 pkgbases=()
@@ -39,7 +39,7 @@ while IFS= read -r line; do
   if [ -z "${pkgbase}" ]; then pkgbase=${pkgname}; fi
 
   # ignore package already in the list
-  if echo "${pkgrepos[@]}" | grep -q "${pkgbase}"; then
+  if echo "${pkgbases[@]}" | grep -q "${pkgbase}"; then
     continue
   fi
 
@@ -47,7 +47,12 @@ while IFS= read -r line; do
   pkgbases+=("${pkgbase}")
   pkgrefs+=("${pkgref}")
 
-done < <(grep -v "^#" "${script_dir}/pkglist.update" | grep -v "^$")
+done < <(grep -v "^#" "${script_dir}/todo.update" | grep -v "^$")
+
+echo "The following pkgbases will be updated, built, and staged:"
+printf '  %s\n' "${pkgbases[@]}"
+read -s -n 1 -p "Press any key to continue..."
+echo -e "\n" 
 
 # for each pkgbase git repo that we want to build
 for (( i=0; i<${#pkgrepos[@]}; i++ )); do
