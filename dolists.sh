@@ -55,7 +55,7 @@ read -s -n 1 -p "Press any key to continue..."
 echo -e "\n" 
 
 # for each pkgbase git repo that we want to build
-for (( i=0; i<${#pkgrepos[@]}; i++ )); do
+for (( i=0; i<${#pkgbases[@]}; i++ )); do
 
   bash "${script_dir}/stage.sh" "${pkgrepos[i]}" "${pkgbases[i]}" "${pkgrefs[i]}"
 
