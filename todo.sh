@@ -22,7 +22,7 @@ while IFS= read -r pkg; do
   pkgarch=$(echo "${x86_64}" | awk -v name="${pkgname}" '$1 == name' | awk '{print $5}')
 
   if [ -z $latest ]; then
-    echo "${repo} ${pkgname}" >> todo.remove
+    echo "${pkgrepo} ${pkgname}" >> todo.remove
     continue
   fi
 
@@ -32,7 +32,7 @@ while IFS= read -r pkg; do
       echo "  ${pkgname} ${staging} is staged"
     else
       echo "  ${pkgname} ${pkgver} => ${latest}"
-      echo "${pkgname} ${latest} ${repo} ${pkgbase} ${pkgarch}" >> todo.update
+      echo "${pkgname} ${latest} ${pkgrepo} ${pkgbase} ${pkgarch}" >> todo.update
     fi
   elif [ $state -lt 0 ]; then
     echo "${pkgname} ${pkgver} > ${latest}" >> todo.ahead

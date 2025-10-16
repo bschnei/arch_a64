@@ -38,6 +38,11 @@ while IFS= read -r line; do
 
   # TODO: handle "special" packages
 
+  # ignore pkgbase already in the list
+  if [ "$pkgarch" != "any" ] && echo "${pkgbases[@]}" | grep -q "${pkgbase}"; then
+    continue
+  fi
+
   pkgnames+=("${pkgname}")
   pkgvers+=("${pkgver}")
   pkgrepos+=("${pkgrepo}")
