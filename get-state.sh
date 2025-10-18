@@ -12,6 +12,24 @@ cd state || exit
 repos=("core" "extra")
 readonly repos
 
+extract_state () {
+
+  for pkg in "${1}"/*/desc; do
+
+    # TODO: load file to memory once should improve performance
+    #pkgdesc=$(cat "${pkg}")
+
+    pkgname=$(awk '/%NAME%/{getline; print}' "${pkg}")
+    pkgbase=$(awk '/%BASE%/{getline; print}' "${pkg}")
+    pkgver=$(awk '/%VERSION%/{getline; print}' "${pkg}")
+    pkgarch=$(awk '/%ARCH%/{getline; print}' "${pkg}")
+
+    echo "${pkgname} ${pkgver} ${repo} ${pkgbase} ${pkgarch}"
+
+  done
+
+}
+
 for repo in "${repos[@]}"; do
 
   echo "Processing [${repo}] database..."
@@ -19,47 +37,17 @@ for repo in "${repos[@]}"; do
 
   mkdir "${repo}"
   curl -s "https://berlin.mirror.pkgbuild.com/${repo}/os/x86_64/${repo}.db.tar.gz" | tar --extract --gzip --directory="${repo}"
-
-  for pkg in "${repo}"/*/desc; do
-
-    pkgname=$(awk '/%NAME%/{getline; print}' "${pkg}")
-    pkgbase=$(awk '/%BASE%/{getline; print}' "${pkg}")
-    pkgver=$(awk '/%VERSION%/{getline; print}' "${pkg}")
-    pkgarch=$(awk '/%ARCH%/{getline; print}' "${pkg}")
-
-    echo "${pkgname} ${pkgver} ${repo} ${pkgbase} ${pkgarch}" >> x86_64
-
-  done
+  extract_state "${repo}" >> x86_64
   rm -rf -- "${repo}"
 
   mkdir "${repo}"
   tar --extract --gzip --directory="${repo}" -f ${script_dir}/pkgrepos/${repo}-staging/${repo}-staging.db.tar.gz
-
-  for pkg in "${repo}"/*/desc; do
-
-    pkgname=$(awk '/%NAME%/{getline; print}' "${pkg}")
-    pkgbase=$(awk '/%BASE%/{getline; print}' "${pkg}")
-    pkgver=$(awk '/%VERSION%/{getline; print}' "${pkg}")
-    pkgarch=$(awk '/%ARCH%/{getline; print}' "${pkg}")
-
-    echo "${pkgname} ${pkgver} ${repo} ${pkgbase} ${pkgarch}" >> staged
-
-  done
+  extract_state "${repo}" >> staged
   rm -rf -- "${repo}"
 
   mkdir "${repo}"
   tar --extract --gzip --directory="${repo}" -f ${script_dir}/pkgrepos/${repo}/${repo}.db.tar.gz 
-
-  for pkg in "${repo}"/*/desc; do
-
-    pkgname=$(awk '/%NAME%/{getline; print}' "${pkg}")
-    pkgbase=$(awk '/%BASE%/{getline; print}' "${pkg}")
-    pkgver=$(awk '/%VERSION%/{getline; print}' "${pkg}")
-    pkgarch=$(awk '/%ARCH%/{getline; print}' "${pkg}")
-
-    echo "${pkgname} ${pkgver} ${repo} ${pkgbase} ${pkgarch}" >> released
-
-  done
+  extract_state "${repo}" >> released
   rm -rf -- "${repo}"
 
 done
