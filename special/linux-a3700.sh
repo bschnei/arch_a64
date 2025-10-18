@@ -34,12 +34,15 @@ sed -i "s|^pkgver=.*$|pkgver=${latest}|g" PKGBUILD
 sed -i "s|^pkgrel=.*$|pkgrel=1|g" PKGBUILD
 sed -i "s|^sha256sums=(.*$|sha256sums=('${new_sha256sum}'|g" PKGBUILD
 
-# build the new package, stopping on errors
-if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/staging" -c -- --ignorearch; then exit; fi
+if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c -- --ignorearch --nobuild; then exit; fi
+
+if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c; then exit; fi
 
 # update config and its hash
 cp -- "${chroot_path}/ben/build/${pkgname}/src/linux-${latest}/.config" config
 updpkgsums
+
+if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -- --ignorearch; then exit; fi
 
 # version control changes
 git commit --all --message="${latest}-1"
@@ -48,10 +51,10 @@ git push
 git tag "${latest}-1"
 git push --tags
 
-# add to staging package repo
+# add to aur package repo
 for pkg in *.pkg.tar.*; do
-  mv "${pkg}" "${pkgrepos_path}/staging"
-  repo-add --remove "${pkgrepos_path}/staging/staging.db.tar.gz" "${pkgrepos_path}/staging/${pkg}"
+  mv "${pkg}" "${pkgrepos_path}/aur"
+  repo-add --remove "${pkgrepos_path}/aur/aur.db.tar.gz" "${pkgrepos_path}/aur/${pkg}"
 done
 
 # remove build artifacts
