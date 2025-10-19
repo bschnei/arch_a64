@@ -16,13 +16,12 @@ extract_state () {
 
   for pkg in "${1}"/*/desc; do
 
-    # TODO: load file to memory once should improve performance
-    #pkgdesc=$(cat "${pkg}")
+    pkgdesc=$(< "${pkg}")
 
-    pkgname=$(awk '/%NAME%/{getline; print}' "${pkg}")
-    pkgbase=$(awk '/%BASE%/{getline; print}' "${pkg}")
-    pkgver=$(awk '/%VERSION%/{getline; print}' "${pkg}")
-    pkgarch=$(awk '/%ARCH%/{getline; print}' "${pkg}")
+    pkgname=$(echo "${pkgdesc}" | awk '/%NAME%/{getline; print}')
+    pkgbase=$(echo "${pkgdesc}" | awk '/%BASE%/{getline; print}')
+    pkgver=$(echo "${pkgdesc}" | awk '/%VERSION%/{getline; print}')
+    pkgarch=$(echo "${pkgdesc}" | awk '/%ARCH%/{getline; print}')
 
     echo "${pkgname} ${pkgver} ${repo} ${pkgbase} ${pkgarch}"
 
