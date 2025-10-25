@@ -8,17 +8,17 @@ readonly script_dir
 repos=("core" "extra")
 readonly repos
 
+rm -f todo.update todo.remove todo.ahead
+
 for repo in "${repos[@]}"; do
 
-  echo "Extracting [${repo}] database..."
+  echo "Generating todo lists for [${repo}]..."
   extract_state "${script_dir}/pkgrepos/${repo}-staging/${repo}-staging.db.tar.gz" > "${script_dir}/state/${repo}.staged"
   extract_state "/mnt/repo/arch/${repo}/os/aarch64/${repo}.db.tar.gz" > "${script_dir}/state/${repo}.released"
 
   x86_64=$(< "${script_dir}/state/${repo}.x86_64")
   staged=$(< "${script_dir}/state/${repo}.staged")
   released=$(< "${script_dir}/state/${repo}.released")
-
-  rm -f todo.update todo.remove todo.ahead
 
   while IFS= read -r pkg; do
 

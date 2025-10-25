@@ -5,16 +5,9 @@ These scripts are used to maintain a few [Arch Linux](https://archlinux.org/) pa
 
 - [x] build all packages in `base` and `base-devel`
 - [x] build other packages that I actively use
-- [ ] build packages need to build the packages above
-- [ ] rebuild kernel config and keep audit trail of changes 
-- [ ] create core/extra repos so devtools can be used
-
-### packages needed for mkarchiso
-- edk2
-- f2fs-tools (FTBFS on aarch64 possibly gcc15 related)
-- qemu-guest-agent
-- usbmuxd (validity check fail)
-- xl2tpd (FTBFS probably gcc15)
+- [ ] build packages needed to build the packages above
+- [x] rebuild kernel config and keep audit trail of changes 
+- [x] create core/extra repos so devtools can be used
 
 ### packages that aren't buildling
 - ncompress (FTBFS likely gcc 15 related)
