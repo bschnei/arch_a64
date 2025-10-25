@@ -11,8 +11,11 @@ if [ -z "${repo}" ]; then
   exit
 fi
 
-pkgrepo_path="${script_dir}/${repo}"
-readonly pkgrepo_path
+if [[ "${repo}" == *"-staging" ]]; then
+  pkgrepo_path="${script_dir}/pkgrepos/${repo}"
+else
+  pkgrepo_path="/mnt/repo/arch/${repo}/os/aarch64"
+fi
 
 rm "${pkgrepo_path}/${repo}."*
 repo-add "${pkgrepo_path}/${repo}.db.tar.gz" "${pkgrepo_path}/"*.pkg.tar.zst

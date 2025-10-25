@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+extract_state () {
+
+  tmp_dir=$(mktemp --directory)
+  tar --extract --gzip --directory="${tmp_dir}" -f "${1}"
+
+  for pkg in "${tmp_dir}"/*/desc; do
+
+    pkgdesc=$(< "${pkg}")
+
+    pkgname=$(echo "${pkgdesc}" | awk '/%NAME%/{getline; print}')
+    pkgbase=$(echo "${pkgdesc}" | awk '/%BASE%/{getline; print}')
+    pkgver=$(echo "${pkgdesc}" | awk '/%VERSION%/{getline; print}')
+    pkgarch=$(echo "${pkgdesc}" | awk '/%ARCH%/{getline; print}')
+
+    echo "${pkgname} ${pkgver} ${pkgbase} ${pkgarch}"
+
+  done
+
+  rm --recursive -- "${tmp_dir}"
+}
