@@ -3,8 +3,6 @@
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit; pwd)
 readonly script_dir
 
-. "$(dirname "$(readlink -e "$0")")/functions"
-
 repos=("core" "extra")
 readonly repos
 
@@ -13,18 +11,18 @@ rm -f todo.update todo.remove todo.ahead
 for repo in "${repos[@]}"; do
 
   echo "Generating todo lists for [${repo}]..."
-  extract_state "${script_dir}/pkgrepos/${repo}-staging/${repo}-staging.db.tar.gz" > "${script_dir}/state/${repo}.staged"
-  extract_state "/mnt/repo/arch/${repo}/os/aarch64/${repo}.db.tar.gz" > "${script_dir}/state/${repo}.released"
 
   x86_64=$(< "${script_dir}/state/${repo}.x86_64")
-  staged=$(< "${script_dir}/state/${repo}.staged")
-  released=$(< "${script_dir}/state/${repo}.released")
+  staged=$(tar -tvzf ${script_dir}/pkgrepos/${repo}-staging/${repo}-staging.db.tar.gz | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
+  released=$(tar -tvzf "/mnt/repo/arch/${repo}/os/aarch64/${repo}.db.tar.gz" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
 
   while IFS= read -r pkg; do
 
-    pkgname=$(echo "${pkg}" | awk '{print $1}')
-    pkgver=$(echo "${pkg}" | awk '{print $2}')
-    staging=$(echo "${staged}" | awk -v name="${pkgname}" '$1 == name' | awk '{print $2}')
+    pkgname=$(echo "${pkg}" | sed -E 's/-[^-]+-[^-]+$//')
+    pattern=$(echo "${pkgname}" | sed 's/+/\\+/g')   
+    pkgver=$(echo "${pkg}" | sed -E "s/^${pattern}-//")
+
+    staging=$(echo "${staged}" | grep -E -m 1 "^${pattern}-[^-]+-[^-]+$" | sed -E "s/^${pattern}-//")
 
     latest=$(echo "${x86_64}" | awk -v name="${pkgname}" '$1 == name' | awk '{print $2}')
     pkgbase=$(echo "${x86_64}" | awk -v name="${pkgname}" '$1 == name' | awk '{print $3}')
