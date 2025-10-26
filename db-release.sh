@@ -9,10 +9,10 @@ readonly repos
 for repo in "${repos[@]}"; do
 
   from="${script_dir}/pkgrepos/${repo}-staging/"
-  to="/mnt/repo/arch/${repo}/os/aarch64/"
+  to="${script_dir}/pkgrepos/${repo}/"
 
   rsync -avh --delete --exclude "${repo}".* --exclude "${repo}-staging".* "${from}" "${to}"
 
-  bash "${script_dir}/db-rebuild.sh" "${repo}"
+  bash "${script_dir}/pkgrepos/rebuild.sh" "${repo}"
 
 done
