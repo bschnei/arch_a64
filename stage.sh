@@ -3,19 +3,27 @@
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit; pwd)
 readonly script_dir
 
+. "$(dirname "$(readlink -e "$0")")/functions"
+
 chroot_path="${script_dir}/chroot"
 srcrepos_path="${script_dir}/srcrepos"
 pkgrepos_path="${script_dir}/pkgrepos"
 readonly chroot_path srcrepos_path pkgrepos_path
 
 pkgname="${1}"
-pkgver="${2}"
-pkgrepo="${3-extra}"
-pkgbase="${4}"
-pkgarch="${5}"
 
+if [ -n "${2}" ]; then
+  pkgver="${2}"
+else
+  pkgver=$(get_pkgver "${pkgname}")
+fi
+
+pkgrepo=$(get_pkgrepo "${pkgname}")
 pkgrepo_path="${pkgrepos_path}/${pkgrepo}-staging"
-readonly pkgrepo_path
+readonly pkgrepo pkgrepo_path
+
+pkgarch=$(get_pkgarch "${pkgname}")
+readonly pkgarch
 
 # arch=(any) packages we can just copy from upstream
 if [ "${pkgarch}" == "any" ]; then
@@ -26,10 +34,9 @@ if [ "${pkgarch}" == "any" ]; then
 
 fi
 
-# if missing, try to determine pkgbase using pacman
-if [ -z "${pkgbase}" ]; then pkgbase=$(pacman -Sdd "${pkgname}" --print-format %e 2>/dev/null); fi
-# if that didn't work, default to the pkgname
-if [ -z "${pkgbase}" ]; then pkgbase=${pkgname}; fi
+# if arch isn't 'any' then we have to build the package...
+pkgbase=$(get_pkgbase "${pkgname}")
+readonly pkgbase
 
 upstream_url="git@gitlab.archlinux.org:archlinux/packaging/packages/${pkgbase}.git"
 fork_url="git@gitlab.archlinux.org:bschnei/${pkgbase}.git"

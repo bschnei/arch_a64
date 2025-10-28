@@ -6,7 +6,7 @@ readonly script_dir
 repos=("core" "extra")
 readonly repos
 
-rm -f todo.missing
+rm -f -- "${script_dir}/pkglist.missing"
 
 for repo in "${repos[@]}"; do
 
@@ -29,7 +29,7 @@ for repo in "${repos[@]}"; do
     latest=$(echo "${released}" | grep -E -m 1 "^${pattern}-[^-]+-[^-]+$" | sed -E "s/^${pattern}-//")
 
     if [ -z "${latest}" ]; then
-      echo "${pkgname} ${pkgver} ${repo} ${pkgbase} ${pkgarch}" >> todo.missing
+      echo "${pkgname} ${pkgver} ${repo} ${pkgbase} ${pkgarch}" >> "${script_dir}/pkglist.missing"
     fi
 
   done <<< "${x86_64}"

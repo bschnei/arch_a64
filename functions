@@ -1,6 +1,22 @@
 #!/usr/bin/env bash
 
-get_repo () {
-  if awk '{print $1}' state/core | grep -Fxq "${1}"; then echo "core"; fi
-  if awk '{print $1}' state/extra | grep -Fxq "${1}"; then echo "extra"; fi
+get_pkgarch () {
+  local r=$(get_pkgrepo "${1}")
+  awk -v name="${1}" '$1 == name {print $4}' "state/${r}"
 }
+
+get_pkgbase () {
+  local r=$(get_pkgrepo "${1}")
+  awk -v name="${1}" '$1 == name {print $3}' "state/${r}"
+}
+
+get_pkgrepo () {
+  if awk '{print $1}' state/extra | grep -Fxq "${1}"; then echo "extra"; exit; fi
+  if awk '{print $1}' state/core | grep -Fxq "${1}"; then echo "core"; exit; fi
+}
+
+get_pkgver () {
+  local r=$(get_pkgrepo "${1}")
+  awk -v name="${1}" '$1 == name {print $2}' "state/${r}"
+}
+

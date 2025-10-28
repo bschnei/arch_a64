@@ -3,8 +3,8 @@
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit; pwd)
 readonly script_dir
 
-repo=$1
-pkgname=$2
+pkgname=$1
+repo=$2
 readonly repo pkgname
 
 if [ -z "${pkgname}" ]; then

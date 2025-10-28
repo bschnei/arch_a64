@@ -6,7 +6,8 @@ readonly script_dir
 repos=("core" "extra")
 readonly repos
 
-rm -f todo.update todo.remove todo.ahead
+true > to.stage
+true > to.unstage
 
 for repo in "${repos[@]}"; do
 
@@ -28,21 +29,32 @@ for repo in "${repos[@]}"; do
     pkgbase=$(echo "${x86_64}" | awk -v name="${pkgname}" '$1 == name' | awk '{print $3}')
     pkgarch=$(echo "${x86_64}" | awk -v name="${pkgname}" '$1 == name' | awk '{print $4}')
 
+    # if our package is not found in the x86_64 repo, we need to remove
     if [ -z "${latest}" ]; then
-      echo "${repo} ${pkgname}" >> todo.remove
+      echo "  [REMOVE] ${repo}/${pkgname}"
+      echo "${pkgname} ${repo}" >> to.unstage
       continue
     fi
 
     state=$(vercmp "${latest}" "${pkgver}")
+
+    # if our package version is behind the x86_64 version...
     if [ "${state}" -gt 0 ]; then
       if [[ "${staging}" == "${latest}" ]]; then
-        echo "  ${pkgname} ${staging} is staged"
+        echo "  [STAGED] ${pkgname} ${staging}"
       else
-        echo "  ${pkgname} ${pkgver} => ${latest}"
-        echo "${pkgname} ${latest} ${repo} ${pkgbase} ${pkgarch}" >> todo.update
+        if [[ "${pkgarch}" == "any" ]]; then
+          echo "  [+ SYNC] ${pkgname} ${pkgver} => ${latest}"
+          echo "${pkgname}" >> to.stage
+        else
+          if grep -Fxq "${pkgbase}" to.stage; then continue; fi
+          echo "  [+BUILD] ${pkgbase} ${pkgver} => ${latest}"
+          echo "${pkgbase}" >> to.stage
+        fi
       fi
-    elif [ "${state}" -lt 0 ]; then
-      echo "${pkgname} ${pkgver} > ${latest}" >> todo.ahead
+    #elif [ "${state}" -lt 0 ]; then
+      # our package version is ahead of x86_64
+      # echo "  [IGNORE] ${pkgname} ${pkgver} ahead of upstream (${latest})"
     fi
 
   done <<< "${released}"
