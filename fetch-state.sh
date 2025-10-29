@@ -43,7 +43,7 @@ for repo in "${repos[@]}"; do
 done
 wait
 
-printf "%s" "Building state files..."
+printf "%s" "Building upstream state files..."
 
 for repo in "${repos[@]}"; do
   (

@@ -3,59 +3,79 @@
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit; pwd)
 readonly script_dir
 
+state_path="${script_dir}/state"
+readonly state_path
+
+# clear old todo list
+rm -f -- "${state_path}/todo"
+
+# for each repo
 repos=("core" "extra")
-readonly repos
-
-true > to.stage
-true > to.unstage
-
 for repo in "${repos[@]}"; do
 
-  echo "Generating todo lists for [${repo}]..."
+  echo "Comparing state of [${repo}] packages..."
 
-  x86_64=$(< "${script_dir}/state/${repo}")
+  # load the state of the repos from disk
+  upstream=$(< "${state_path}/${repo}")
   staged=$(tar -tvzf "${script_dir}/pkgrepos/${repo}-staging/${repo}-staging.db.tar.gz" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
   released=$(tar -tvzf "${script_dir}/pkgrepos/${repo}/${repo}.db.tar.gz" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
 
+  # for each package in ${released}...
   while IFS= read -r pkg; do
 
+    # each line in ${released} is formatted as: pkgname-pkgver
+    # e.g. linux-6.16.7-arch1
     pkgname=$(echo "${pkg}" | sed -E 's/-[^-]+-[^-]+$//')
+
+    # + is a special character for regex that can be in pkgname
+    # so escape it when parsing out pkgver
     pattern=$(echo "${pkgname}" | sed 's/+/\\+/g')   
-    pkgver=$(echo "${pkg}" | sed -E "s/^${pattern}-//")
+    pkgver_released=$(echo "${pkg}" | sed -E "s/^${pattern}-//")
 
-    staging=$(echo "${staged}" | grep -E -m 1 "^${pattern}-[^-]+-[^-]+$" | sed -E "s/^${pattern}-//")
+    # pkgver in ${repo}-staged
+    pkgver_staged=$(echo "${staged}" | grep -E -m 1 "^${pattern}-[^-]+-[^-]+$" | sed -E "s/^${pattern}-//")
 
-    latest=$(echo "${x86_64}" | awk -v name="${pkgname}" '$1 == name' | awk '{print $2}')
-    pkgbase=$(echo "${x86_64}" | awk -v name="${pkgname}" '$1 == name' | awk '{print $3}')
-    pkgarch=$(echo "${x86_64}" | awk -v name="${pkgname}" '$1 == name' | awk '{print $4}')
+    # pkgver from upstream
+    pkgver_upstream=$(echo "${upstream}" | awk -v name="${pkgname}" '$1 == name' | awk '{print $2}')
+    pkgarch=$(echo "${upstream}" | awk -v name="${pkgname}" '$1 == name' | awk '{print $4}')
 
-    # if our package is not found in the x86_64 repo, we need to remove
-    if [ -z "${latest}" ]; then
-      echo "  [REMOVE] ${repo}/${pkgname}"
-      echo "${pkgname} ${repo}" >> to.unstage
+    # if our package is not found in the upstream repo, we need to remove
+    if [ -z "${pkgver_upstream}" ]; then
+      # TODO: create exception for any aarch64-only packages
+      echo "  - ${pkgname}"
+      echo "remove ${pkgname} ${repo}" >> "${state_path}/todo"
       continue
     fi
 
-    state=$(vercmp "${latest}" "${pkgver}")
+    # compare upstream with what is released
+    state=$(vercmp "${pkgver_upstream}" "${pkgver_released}")
+    
+    # if up-to-date, there is nothing to do
+    if [[ "${state}" == "0" ]]; then continue; fi
+
+    # if the latest upstream version is already in staging, it is pending release
+    if [[ "${pkgver_staged}" == "${pkgver_upstream}" ]]; then
+      echo "  + ${pkgname} ${pkgver_staged}"
+      echo "release ${pkgname} ${pkgver_staged} ${repo}" >> "${state_path}/todo"
+      continue
+    fi
+
+    # if it's an 'any' package, we need to synchronize it with upstream
+    if [[ "${pkgarch}" == "any" ]]; then
+      echo "  S ${pkgname} ${pkgver_released} => ${pkgver_upstream}"
+      echo "sync ${pkgname} ${pkgver_upstream} ${repo}" >> "${state_path}/todo"
+      continue
+    fi 
 
     # if our package version is behind the x86_64 version...
     if [ "${state}" -gt 0 ]; then
-      if [[ "${staging}" == "${latest}" ]]; then
-        echo "  [STAGED] ${pkgname} ${staging}"
-      else
-        if [[ "${pkgarch}" == "any" ]]; then
-          echo "  [+ SYNC] ${pkgname} ${pkgver} => ${latest}"
-          echo "${pkgname}" >> to.stage
-        else
-          if grep -Fxq "${pkgbase}" to.stage; then continue; fi
-          echo "  [+BUILD] ${pkgbase} ${pkgver} => ${latest}"
-          echo "${pkgbase}" >> to.stage
-        fi
-      fi
-    #elif [ "${state}" -lt 0 ]; then
-      # our package version is ahead of x86_64
-      # echo "  [IGNORE] ${pkgname} ${pkgver} ahead of upstream (${latest})"
+      echo "  B ${pkgname} ${pkgver_released} => ${pkgver_upstream}"
+      echo "build ${pkgname} ${pkgver_upstream} ${repo}" >> "${state_path}/todo"
+      continue
     fi
+
+    # if we made it this far we have a pkgver newer than upstream
+    #echo "  I ${pkgname} ${pkgver_released} ahead of upstream (${pkgver_upstream})"
 
   done <<< "${released}"
 

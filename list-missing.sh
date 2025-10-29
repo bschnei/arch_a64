@@ -3,14 +3,16 @@
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit; pwd)
 readonly script_dir
 
+state_path="${script_dir}/state"
+readonly state_path
+
+rm -f -- ${state_path}/missing
+
 repos=("core" "extra")
-readonly repos
-
-rm -f -- "${script_dir}/pkglist.missing"
-
 for repo in "${repos[@]}"; do
 
-  x86_64=$(< "${script_dir}/state/${repo}")
+  # load data from disk
+  upstream=$(< "${state_path}/${repo}")
   released=$(tar -tvzf "${script_dir}/pkgrepos/${repo}/${repo}.db.tar.gz" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
 
   while IFS= read -r pkginfo; do
@@ -20,7 +22,7 @@ for repo in "${repos[@]}"; do
     pkgbase=$(echo "${pkginfo}" | cut -d ' ' -f 3)
     pkgarch=$(echo "${pkginfo}" | cut -d ' ' -f 4)
 
-    if grep -Fxq "${pkgname}" pkglist.ignore; then continue; fi
+    if grep -Fxq "${pkgname}" "${script_dir}/pkglist/ignore"; then continue; fi
 
     # ignore haskell- packages
     if [[ "${pkgname}" == haskell-* ]]; then continue; fi
@@ -29,10 +31,10 @@ for repo in "${repos[@]}"; do
     latest=$(echo "${released}" | grep -E -m 1 "^${pattern}-[^-]+-[^-]+$" | sed -E "s/^${pattern}-//")
 
     if [ -z "${latest}" ]; then
-      echo "${pkgname} ${pkgver} ${repo} ${pkgbase} ${pkgarch}" >> "${script_dir}/pkglist.missing"
+      echo "${pkgname}" >> "${state_path}/missing"
     fi
 
-  done <<< "${x86_64}"
+  done <<< "${upstream}"
 
 done
 

@@ -3,16 +3,26 @@
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit; pwd)
 readonly script_dir
 
-repos=("core" "extra")
-readonly repos
+pkgrepo_path="${script_dir}/pkgrepos"
+state_path="${script_dir}/state"
+readonly pkgrepo_path state_path
 
-for repo in "${repos[@]}"; do
+# load packages to be released from todo list
+releases=$(awk '$1 == "release" {print $2,$3,$4}' "${state_path}/todo")
 
-  from="${script_dir}/pkgrepos/${repo}-staging/"
-  to="${script_dir}/pkgrepos/${repo}/"
+while IFS= read -r line; do
 
-  rsync -avh --delete --exclude "${repo}".* --exclude "${repo}-staging".* "${from}" "${to}"
+  pkgname=$(echo "${line}" | cut -d ' ' -f 1)
+  pkgver=$(echo "${line}" | cut -d ' ' -f 2)
+  pkgrepo=$(echo "${line}" | cut -d ' ' -f 3)
 
-  bash "${script_dir}/pkgrepos/rebuild.sh" "${repo}"
+  src="${pkgrepo_path}/${pkgrepo}-staging/${pkgname}-${pkgver}-*"
+  dest="${pkgrepo_path}/${pkgrepo}"
 
-done
+  rsync -av ${src} ${dest}/
+  pkgfile="${dest}/${pkgname}-${pkgver}-*.pkg.tar.zst"
+  repo-add --remove "${dest}/${pkgrepo}.db.tar.gz" ${pkgfile}
+
+  # TODO: update state files?
+
+done <<< "${releases}"

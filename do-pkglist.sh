@@ -28,7 +28,7 @@ while IFS= read -r pkgname; do
   pkgnames+=("${pkgname}")
   pkgbases+=("${pkgbase}")
 
-done < <(grep -v "^#" "${script_dir}/pkglist.${list}" | grep -v "^$")
+done < <(grep -v "^#" "${script_dir}/pkglist/${list}" | grep -v "^$")
 
 echo "The following packages will be staged:"
 printf '  %s\n' "${pkgnames[@]}"

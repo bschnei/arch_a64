@@ -102,6 +102,9 @@ for pkg in *.pkg.tar.*; do
   repo-add --remove "${pkgrepo_path}/${pkgrepo}-staging.db.tar.gz" "${pkgrepo_path}/${pkg}"
 done
 
+# update downstream state files
+#sed -i "/${pattern}/d" "${script_dir}/to.stage"
+
 # remove build artifacts
 cd .. || exit
 rm -rf -- "${pkgbase}"
