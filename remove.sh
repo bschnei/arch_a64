@@ -3,8 +3,9 @@
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit; pwd)
 readonly script_dir
 
+pkgrepos_path="${script_dir}/pkgrepos"
 state_path="${script_dir}/state"
-readonly state_path
+readonly pkgrepos_path state_path
 
 pkgname="${1}"
 pkgrepo="${2}"
@@ -20,14 +21,15 @@ if [ -z "${pkgrepo}" ]; then
   exit
 fi
 
-for repo in ("${pkgrepo}-staging" "${pkgrepo}"); do
+repos=("${pkgrepo}-staging" "${pkgrepo}")
+for repo in "${repos[@]}"; do
 
   # remove from database
-  repo-remove "${script_dir}/${repo}/${repo}.db.tar.gz" "${pkgname}"
+  repo-remove "${pkgrepos_path}/${repo}/${repo}.db.tar.gz" "${pkgname}"
   
   # remove package file and signature
-  find "${script_dir}/${repo}" -type f -regextype posix-extended -regex ".*/${pkgname}-[^-]+-[^-]+-[^-]+.pkg.tar.zst" -delete
-  find "${script_dir}/${repo}" -type f -regextype posix-extended -regex ".*/${pkgname}-[^-]+-[^-]+-[^-]+.pkg.tar.zst.sig" -delete
+  find "${pkgrepos_path}/${repo}" -type f -regextype posix-extended -regex ".*/${pkgname}-[^-]+-[^-]+-[^-]+.pkg.tar.zst" -delete
+  find "${pkgrepos_path}/${repo}" -type f -regextype posix-extended -regex ".*/${pkgname}-[^-]+-[^-]+-[^-]+.pkg.tar.zst.sig" -delete
   
 done
 

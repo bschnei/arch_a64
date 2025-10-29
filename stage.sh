@@ -8,7 +8,8 @@ readonly script_dir
 chroot_path="${script_dir}/chroot"
 srcrepos_path="${script_dir}/srcrepos"
 pkgrepos_path="${script_dir}/pkgrepos"
-readonly chroot_path srcrepos_path pkgrepos_path
+state_path="${script_dir}/state"
+readonly chroot_path srcrepos_path pkgrepos_path state_path
 
 pkgname="${1}"
 
@@ -103,7 +104,8 @@ for pkg in *.pkg.tar.*; do
 done
 
 # update downstream state files
-#sed -i "/${pattern}/d" "${script_dir}/to.stage"
+pattern=$(echo "${pkgname}" | sed 's/+/\\+/g')
+sed -i "s/^build ${pattern} ${pkgver} ${pkgrepo}$/release ${pattern} ${pkgver} ${pkgrepo}/" "${state_path}/todo"
 
 # remove build artifacts
 cd .. || exit

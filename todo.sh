@@ -67,7 +67,7 @@ for repo in "${repos[@]}"; do
       continue
     fi 
 
-    # if our package version is behind the x86_64 version...
+    # if behind the x86_64 version, we need to build it
     if [ "${state}" -gt 0 ]; then
       echo "  B ${pkgname} ${pkgver_released} => ${pkgver_upstream}"
       echo "build ${pkgname} ${pkgver_upstream} ${repo}" >> "${state_path}/todo"

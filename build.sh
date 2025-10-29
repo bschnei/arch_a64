@@ -18,7 +18,7 @@ while IFS= read -r line; do
   pkgname=$(echo "${line}" | cut -d ' ' -f 1)
   pkgrepo=$(echo "${line}" | cut -d ' ' -f 2)
 
-  bash "${script_dir}/pkgrepos/remove.sh" "${pkgname}" "${pkgrepo}"
+  bash "${script_dir}/remove.sh" "${pkgname}" "${pkgrepo}"
 
 done <<< "${remove}"
 
@@ -53,7 +53,7 @@ while IFS= read -r line; do
   pkgbase=$(get_pkgbase "${pkgname}")
 
   # ignore pkgbase already in the list
-  if printf '%s\0' "${pkgbases[@]}" | grep -qwz "${pkgbase}"; then
+  if printf '%s\n' "${pkgbases[@]}" | grep -xq "${pkgbase}"; then
     continue
   fi
 
@@ -65,7 +65,7 @@ done <<< "${build}"
 for (( i=0; i<${#pkgbases[@]}; i++ )); do
 
   # TODO: handle "special" packages
-  bash "${script_dir}/stage.sh" "${pkgbase[i]}" "${pkgvers[i]}"
+  bash "${script_dir}/stage.sh" "${pkgbases[i]}" "${pkgvers[i]}"
 
 done
 
