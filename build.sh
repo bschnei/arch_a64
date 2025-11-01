@@ -22,23 +22,6 @@ while IFS= read -r line; do
 
 done <<< "${remove}"
 
-
-# load packages to be synced from todo list
-sync=$(awk '$1 == "sync" {print $2,$3,$4}' "${state_path}/todo")
-
-while IFS= read -r line; do
-
-  if [ -z "${line}" ]; then continue; fi
-  pkgname=$(echo "${line}" | cut -d ' ' -f 1)
-  pkgver=$(echo "${line}" | cut -d ' ' -f 2)
-  pkgrepo=$(echo "${line}" | cut -d ' ' -f 3)
-
-  rsync -Lavh "rsync://berlin.mirror.pkgbuild.com/packages/${pkgrepo}/os/x86_64/${pkgname}-${pkgver}-any.pkg.tar.*" "${pkgrepo_path}/${pkgrepo}-staging/"
-  repo-add --remove "${pkgrepo_path}/${pkgrepo}-staging/${pkgrepo}-staging.db.tar.gz" "${pkgrepo_path}/${pkgrepo}-staging/${pkgname}-${pkgver}-any.pkg.tar.zst"
-
-done <<< "${sync}"
-
-
 # load packages to be built from todo list
 build=$(awk '$1 == "build" {print $2,$3,$4}' "${state_path}/todo")
 

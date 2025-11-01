@@ -15,6 +15,12 @@ openssl-1.1
 vi
 
 # not packaging
+cabal-fmt
+cabal-instal
+cabal-plan
+ghc
+ghc-libs
+ghc-static
 lib32-gcc-libs
 lib32-glibc
-
+sigrok-firmware-fx2lafw

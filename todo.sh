@@ -29,7 +29,7 @@ for repo in "${repos[@]}"; do
 
     # + is a special character for regex that can be in pkgname
     # so escape it when parsing out pkgver
-    pattern=$(echo "${pkgname}" | sed 's/+/\\+/g')   
+    pattern=$(echo "${pkgname}" | sed 's/+/\\+/g')
     pkgver_released=$(echo "${pkg}" | sed -E "s/^${pattern}-//")
 
     # pkgver in ${repo}-staged
@@ -47,6 +47,9 @@ for repo in "${repos[@]}"; do
       continue
     fi
 
+    # skip 'any' packages
+    if [[ "${pkgarch}" == "any" ]]; then continue; fi
+
     # compare upstream with what is released
     state=$(vercmp "${pkgver_upstream}" "${pkgver_released}")
     
@@ -54,18 +57,7 @@ for repo in "${repos[@]}"; do
     if [[ "${state}" == "0" ]]; then continue; fi
 
     # if the latest upstream version is already in staging, it is pending release
-    if [[ "${pkgver_staged}" == "${pkgver_upstream}" ]]; then
-      echo "  + ${pkgname} ${pkgver_staged}"
-      echo "release ${pkgname} ${pkgver_staged} ${repo}" >> "${state_path}/todo"
-      continue
-    fi
-
-    # if it's an 'any' package, we need to synchronize it with upstream
-    if [[ "${pkgarch}" == "any" ]]; then
-      echo "  S ${pkgname} ${pkgver_released} => ${pkgver_upstream}"
-      echo "sync ${pkgname} ${pkgver_upstream} ${repo}" >> "${state_path}/todo"
-      continue
-    fi 
+    if [[ "${pkgver_staged}" == "${pkgver_upstream}" ]]; then continue; fi
 
     # if behind the x86_64 version, we need to build it
     if [ "${state}" -gt 0 ]; then

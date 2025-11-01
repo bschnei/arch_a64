@@ -7,8 +7,55 @@ pkgrepo_path="${script_dir}/pkgrepos"
 state_path="${script_dir}/state"
 readonly pkgrepo_path state_path
 
-# load packages to be released from todo list
-releases=$(awk '$1 == "release" {print $2,$3,$4}' "${state_path}/todo")
+# TODO: warn if there are outstanding todos?
+
+# clear old torelease list
+rm -f -- "${state_path}/torelease"
+
+repos=("core" "extra")
+for repo in "${repos[@]}"; do
+
+  printf "%s" "Looking for unreleased packages in [${repo}-staging]..."
+
+  # load the state of the repos from disk
+  staged=$(tar -tvzf "${script_dir}/pkgrepos/${repo}-staging/${repo}-staging.db.tar.gz" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
+  released=$(tar -tvzf "${script_dir}/pkgrepos/${repo}/${repo}.db.tar.gz" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
+
+  # for each package in ${staged}...
+  while IFS= read -r pkg; do
+
+    # each line in ${staged} is formatted as: pkgname-pkgver
+    # e.g. linux-6.16.7-arch1
+    pkgname=$(echo "${pkg}" | sed -E 's/-[^-]+-[^-]+$//')
+
+    # + is a special character for regex that can be in pkgname
+    # so escape it when parsing out pkgver
+    pattern=$(echo "${pkgname}" | sed 's/+/\\+/g')   
+    pkgver_staged=$(echo "${pkg}" | sed -E "s/^${pattern}-//")
+
+    # pkgver in ${released}
+    pkgver_released=$(echo "${released}" | grep -E -m 1 "^${pattern}-[^-]+-[^-]+$" | sed -E "s/^${pattern}-//")
+
+    if [[ "${pkgver_staged}" == "${pkgver_released}" ]]; then continue; fi
+
+    echo "${pkgname} ${pkgver_staged} ${repo}" >> "${state_path}/torelease"
+
+  done <<< "${staged}"
+
+  printf "%s\n" "done!"
+
+done
+
+if [ ! -f "${state_path}/torelease" ]; then exit; fi
+if [ ! -s "${state_path}/torelease" ]; then exit; fi
+
+# load packages to be released from torelease list
+releases=$(< "${state_path}/torelease")
+
+echo "The following packages will be released:"
+sed 's/^/  /' "${state_path}/torelease"
+read -s -n 1 -p "Press any key to continue..."
+echo -e "\n" 
 
 while IFS= read -r line; do
 
@@ -23,6 +70,7 @@ while IFS= read -r line; do
   pkgfile="${dest}/${pkgname}-${pkgver}-*.pkg.tar.zst"
   repo-add --remove "${dest}/${pkgrepo}.db.tar.gz" ${pkgfile}
 
-  # TODO: update state files?
-
 done <<< "${releases}"
+
+# clear torelease list
+rm -f -- "${state_path}/torelease"
