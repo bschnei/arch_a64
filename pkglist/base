@@ -1,18 +1,14 @@
 acl
-archlinux-keyring
 attr
 audit
 autoconf
 automake
-base-devel
 bash
 binutils
 bison
 brotli
 bzip2
-ca-certificates
 ca-certificates-mozilla
-ca-certificates-utils
 coreutils
 cryptsetup
 curl
@@ -28,7 +24,6 @@ e2fsprogs
 expat
 fakeroot
 file
-filesystem
 findutils
 flex
 gawk
@@ -48,8 +43,6 @@ grep
 groff
 guile
 gzip
-hwdata
-iana-etc
 icu
 jansson
 json-c
@@ -102,9 +95,7 @@ npth
 openssl
 p11-kit
 pacman
-pacman-mirrorlist
 pam
-pambase
 patch
 pcre2
 perl
