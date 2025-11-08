@@ -15,8 +15,6 @@ rm -f -- "${state_path}/torelease"
 repos=("core" "extra")
 for repo in "${repos[@]}"; do
 
-  printf "%s" "Looking for packages in [${repo}-staging]..."
-
   # load the state of the repos from disk
   staged=$(tar -tvzf "${script_dir}/pkgrepos/${repo}-staging/${repo}-staging.db.tar.gz" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
   released=$(tar -tvzf "${script_dir}/pkgrepos/${repo}/${repo}.db.tar.gz" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
@@ -38,8 +36,6 @@ for repo in "${repos[@]}"; do
     echo "${pkgname} ${pkgver} ${repo}" >> "${state_path}/torelease"
 
   done <<< "${staged}"
-
-  printf "%s\n" "done!"
 
 done
 
