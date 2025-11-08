@@ -13,8 +13,6 @@ readonly pkgrepo_path state_path
 repos=("core" "extra")
 for repo in "${repos[@]}"; do
 
-  echo "Syncing 'any' packages in [${repo}]..."
-
   # load the state of the repos from disk
   upstream=$(awk '$4 == "any" {print $1,$2,$3}' "${state_path}/${repo}")
   staged=$(tar -tvzf "${script_dir}/pkgrepos/${repo}-staging/${repo}-staging.db.tar.gz" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
