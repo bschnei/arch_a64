@@ -37,11 +37,11 @@ while IFS= read -r line; do
 done <<< "${tobuild}"
 
 if [ ${#pkgbases[@]} -eq 0 ]; then
-  printf "%s\n" "nothing to build!"
+  printf "%s\n" "Nothing to build!"
   exit
 fi
 
-printf "\n%s\n" "The following pkgbases will be built..."
+printf "%s\n" "The following pkgbases will be built..."
 printf "  %s\n" "${pkgbases[@]}"
 read -s -n 1 -p "Press any key to continue..."
 printf "\n"
