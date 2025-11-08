@@ -105,7 +105,7 @@ done
 
 # remove from tobuild list 
 pattern=$(echo "${pkgname}" | sed 's/+/\\+/g')
-sed -i "/^build ${pattern} ${pkgver} ${pkgrepo}$/d" "${state_path}/todo"
+sed -i "/^${pattern} ${pkgver} ${pkgrepo}$/d" "${state_path}/tobuild"
 
 # remove build artifacts
 cd .. || exit

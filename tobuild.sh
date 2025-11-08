@@ -3,17 +3,21 @@
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit; pwd)
 readonly script_dir
 
+. "$(dirname "$(readlink -e "$0")")/functions"
+
 state_path="${script_dir}/state"
 readonly state_path
 
-# clear old todo list
-rm -f -- "${state_path}/todo"
+# clear old tobuild list
+rm -f -- "${state_path}/tobuild"
 
-# for each repo
+echo "Looking for outdated packages..."
+
+pkgbases=()
+pkgvers=()
+
 repos=("core" "extra")
 for repo in "${repos[@]}"; do
-
-  echo "Comparing state of [${repo}] packages..."
 
   # load the state of the repos from disk
   upstream=$(< "${state_path}/${repo}")
@@ -39,14 +43,6 @@ for repo in "${repos[@]}"; do
     pkgver_upstream=$(echo "${upstream}" | awk -v name="${pkgname}" '$1 == name' | awk '{print $2}')
     pkgarch=$(echo "${upstream}" | awk -v name="${pkgname}" '$1 == name' | awk '{print $4}')
 
-    # if our package is not found in the upstream repo, we need to remove
-    if [ -z "${pkgver_upstream}" ]; then
-      # TODO: create exception for any aarch64-only packages
-      echo "  - ${pkgname}"
-      echo "remove ${pkgname} ${repo}" >> "${state_path}/todo"
-      continue
-    fi
-
     # skip 'any' packages
     if [[ "${pkgarch}" == "any" ]]; then continue; fi
 
@@ -61,8 +57,19 @@ for repo in "${repos[@]}"; do
 
     # if behind the x86_64 version, we need to build it
     if [ "${state}" -gt 0 ]; then
-      echo "  B ${pkgname} ${pkgver_released} => ${pkgver_upstream}"
-      echo "build ${pkgname} ${pkgver_upstream} ${repo}" >> "${state_path}/todo"
+
+      pkgbase=$(get_pkgbase "${pkgname}")
+
+      # ignore pkgbase already in the list
+      if printf '%s\n' "${pkgbases[@]}" | grep -xq "${pkgbase}"; then
+        continue
+      fi
+
+      # TODO: ignore packages "on hold"
+      pkgbases+=("${pkgbase}")
+      echo " ${repo} ${pkgbase} ${pkgver_released} => ${pkgver_upstream}"
+      echo "${pkgbase} ${pkgver_upstream} ${repo}" >> "${state_path}/tobuild"
+      
       continue
     fi
 
@@ -72,3 +79,4 @@ for repo in "${repos[@]}"; do
   done <<< "${released}"
 
 done
+

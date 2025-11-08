@@ -5,32 +5,23 @@ readonly script_dir
 
 . "$(dirname "$(readlink -e "$0")")/functions"
 
-pkgrepo_path="${script_dir}/pkgrepos"
 state_path="${script_dir}/state"
-readonly pkgrepo_path state_path
+readonly state_path
 
-# load packages to be removed from todo list
-remove=$(awk '$1 == "remove" {print $2,$3}' "${state_path}/todo")
-
-while IFS= read -r line; do
-
-  if [ -z "${line}" ]; then continue; fi
-  pkgname=$(echo "${line}" | cut -d ' ' -f 1)
-  pkgrepo=$(echo "${line}" | cut -d ' ' -f 2)
-
-  bash "${script_dir}/remove.sh" "${pkgname}" "${pkgrepo}"
-
-done <<< "${remove}"
-
-# load packages to be built from todo list
-build=$(awk '$1 == "build" {print $2,$3,$4}' "${state_path}/todo")
+# load packages to be built from list
+tobuild=$(< "${state_path}/tobuild")
 
 # deduplicate pkgbases
 pkgbases=()
 pkgvers=()
 while IFS= read -r line; do
 
+  # skip empty lines
   if [ -z "${line}" ]; then continue; fi
+
+  # skip commented lines
+  if [[ "${line}" == "#"* ]]; then continue; fi
+
   pkgname=$(echo "${line}" | cut -d ' ' -f 1)
   pkgver=$(echo "${line}" | cut -d ' ' -f 2)
   pkgbase=$(get_pkgbase "${pkgname}")
@@ -43,7 +34,17 @@ while IFS= read -r line; do
   pkgbases+=("${pkgbase}")
   pkgvers+=("${pkgver}")
 
-done <<< "${build}"
+done <<< "${tobuild}"
+
+if [ ${#pkgbases[@]} -eq 0 ]; then
+  printf "%s\n" "nothing to build!"
+  exit
+fi
+
+printf "\n%s\n" "The following pkgbases will be built..."
+printf "  %s\n" "${pkgbases[@]}"
+read -s -n 1 -p "Press any key to continue..."
+printf "\n"
 
 for (( i=0; i<${#pkgbases[@]}; i++ )); do
 
@@ -51,4 +52,3 @@ for (( i=0; i<${#pkgbases[@]}; i++ )); do
   bash "${script_dir}/stage.sh" "${pkgbases[i]}" "${pkgvers[i]}"
 
 done
-

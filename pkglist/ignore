@@ -1,4 +1,6 @@
-# not relevant
+# not relevant on aarch64
+amd-ucode
+intel-ucode
 aarch64-linux-gnu-binutils
 aarch64-linux-gnu-gcc
 aarch64-linux-gnu-gdb
