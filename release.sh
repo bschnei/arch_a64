@@ -15,7 +15,7 @@ rm -f -- "${state_path}/torelease"
 repos=("core" "extra")
 for repo in "${repos[@]}"; do
 
-  printf "%s" "Looking for unreleased packages in [${repo}-staging]..."
+  printf "%s" "Looking for packages in [${repo}-staging]..."
 
   # load the state of the repos from disk
   staged=$(tar -tvzf "${script_dir}/pkgrepos/${repo}-staging/${repo}-staging.db.tar.gz" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
@@ -24,6 +24,8 @@ for repo in "${repos[@]}"; do
   # for each package in ${staged}...
   while IFS= read -r pkg; do
 
+    if [ -z "${pkg}" ]; then continue; fi
+
     # each line in ${staged} is formatted as: pkgname-pkgver
     # e.g. linux-6.16.7-arch1
     pkgname=$(echo "${pkg}" | sed -E 's/-[^-]+-[^-]+$//')
@@ -31,14 +33,9 @@ for repo in "${repos[@]}"; do
     # + is a special character for regex that can be in pkgname
     # so escape it when parsing out pkgver
     pattern=$(echo "${pkgname}" | sed 's/+/\\+/g')   
-    pkgver_staged=$(echo "${pkg}" | sed -E "s/^${pattern}-//")
+    pkgver=$(echo "${pkg}" | sed -E "s/^${pattern}-//")
 
-    # pkgver in ${released}
-    pkgver_released=$(echo "${released}" | grep -E -m 1 "^${pattern}-[^-]+-[^-]+$" | sed -E "s/^${pattern}-//")
-
-    if [[ "${pkgver_staged}" == "${pkgver_released}" ]]; then continue; fi
-
-    echo "${pkgname} ${pkgver_staged} ${repo}" >> "${state_path}/torelease"
+    echo "${pkgname} ${pkgver} ${repo}" >> "${state_path}/torelease"
 
   done <<< "${staged}"
 
@@ -66,9 +63,10 @@ while IFS= read -r line; do
   src="${pkgrepo_path}/${pkgrepo}-staging/${pkgname}-${pkgver}-*"
   dest="${pkgrepo_path}/${pkgrepo}"
 
-  rsync -av ${src} ${dest}/
+  rsync -av --remove-source-files ${src} ${dest}/
   pkgfile="${dest}/${pkgname}-${pkgver}-*.pkg.tar.zst"
   repo-add --remove "${dest}/${pkgrepo}.db.tar.gz" ${pkgfile}
+  repo-remove "${dest}-staging/${pkgrepo}-staging.db.tar.gz" "${pkgname}"
 
 done <<< "${releases}"
 

@@ -36,6 +36,10 @@ for repo in "${repos[@]}"; do
     # if versions match, go to next package
     if [[ "${pkgver}" == "${released_ver}" ]]; then continue; fi
 
+    # if already staged, go to next package
+    staged_ver=$(echo "${staged}" | grep -E -m 1 "^${pattern}-[^-]+-[^-]+$" | sed -E "s/^${pattern}-//")
+    if [[ "${pkgver}" == "${staged_ver}" ]]; then continue; fi
+
     # skip packages on ignore list
     if grep -Fxq "${pkgname}" "${script_dir}/pkglist/ignore"; then continue; fi
     
@@ -43,11 +47,6 @@ for repo in "${repos[@]}"; do
     if ! rsync -Lavh "rsync://berlin.mirror.pkgbuild.com/packages/${repo}/os/x86_64/${pkgname}-${pkgver}-any.pkg.tar.*" "${pkgrepo_path}/${repo}-staging/"; then continue; fi
     # update staging package database
     repo-add --remove "${pkgrepo_path}/${repo}-staging/${repo}-staging.db.tar.gz" "${pkgrepo_path}/${repo}-staging/${pkgname}-${pkgver}-any.pkg.tar.zst"
-
-    # download newer version
-    if ! rsync -Lavh "rsync://berlin.mirror.pkgbuild.com/packages/${repo}/os/x86_64/${pkgname}-${pkgver}-any.pkg.tar.*" "${pkgrepo_path}/${repo}/"; then continue; fi
-    # update package database
-    repo-add --remove "${pkgrepo_path}/${repo}/${repo}.db.tar.gz" "${pkgrepo_path}/${repo}/${pkgname}-${pkgver}-any.pkg.tar.zst"
 
   done <<< "${upstream}"
 
