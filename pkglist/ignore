@@ -1,3 +1,6 @@
+# needs work
+kodi
+
 # not relevant on aarch64
 amd-ucode
 intel-ucode
@@ -16,13 +19,19 @@ linux-lts-headers
 openssl-1.1
 vi
 
-# not packaging
+# haskell related (no intention to package)
+agda
+agda-stdlib
 cabal-fmt
 cabal-instal
 cabal-plan
 ghc
 ghc-libs
 ghc-static
+gitit
+
+# not packaging
 lib32-gcc-libs
 lib32-glibc
+lib32-rust-libs
 sigrok-firmware-fx2lafw
