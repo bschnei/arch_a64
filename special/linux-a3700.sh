@@ -34,18 +34,13 @@ sed -i "s|^pkgver=.*$|pkgver=${latest}|g" PKGBUILD
 sed -i "s|^pkgrel=.*$|pkgrel=1|g" PKGBUILD
 sed -i "s|^sha256sums=(.*$|sha256sums=('${new_sha256sum}'|g" PKGBUILD
 
-if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c -- --ignorearch --nobuild; then exit; fi
-
-if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c; then exit; fi
-
 # update config and its hash
+if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c -- --nobuild; then exit; fi
 cp -- "${chroot_path}/ben/build/${pkgname}/src/linux-${latest}/.config" config
 updpkgsums
-
-if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -- --ignorearch; then exit; fi
-
-# version control changes
 git commit --all --message="${latest}-1"
+
+if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging"; then exit; fi
 git push
 
 git tag "${latest}-1"
