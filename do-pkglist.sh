@@ -21,7 +21,7 @@ while IFS= read -r pkgname; do
   pkgbase=$(get_pkgbase "${pkgname}")
   pkgarch=$(get_pkgarch "${pkgname}")
 
-  if [ "$pkgarch" != "any" ] && echo "${pkgbases[@]}" | grep -q "${pkgbase}"; then
+  if [ "${pkgarch}" != "any" ] && echo "${pkgbases[@]}" | grep -q "${pkgbase}"; then
     continue
   fi
 
@@ -35,9 +35,9 @@ printf '  %s\n' "${pkgnames[@]}"
 read -s -n 1 -p "Press any key to continue..."
 echo -e "\n" 
 
-for (( i=0; i<${#pkgbases[@]}; i++ )); do
+for (( i=0; i<${#pkgnames[@]}; i++ )); do
 
-  bash "${script_dir}/stage.sh" "${pkgbases[i]}"
+  bash "${script_dir}/stage.sh" "${pkgnames[i]}"
 
 done
 

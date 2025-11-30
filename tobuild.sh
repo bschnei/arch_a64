@@ -8,8 +8,8 @@ readonly script_dir
 state_path="${script_dir}/state"
 readonly state_path
 
-# clear old tobuild list
-rm -f -- "${state_path}/tobuild"
+# remove any old tobuild list
+rm -f "${script_dir}/pkglist/tobuild"
 
 echo "Looking for outdated packages..."
 
@@ -57,19 +57,7 @@ for repo in "${repos[@]}"; do
 
     # if behind the x86_64 version, we need to build it
     if [ "${state}" -gt 0 ]; then
-
-      pkgbase=$(get_pkgbase "${pkgname}")
-
-      # ignore pkgbase already in the list
-      if printf '%s\n' "${pkgbases[@]}" | grep -xq "${pkgbase}"; then
-        continue
-      fi
-
-      # TODO: ignore packages "on hold"
-      pkgbases+=("${pkgbase}")
-      echo " ${repo} ${pkgbase} ${pkgver_released} => ${pkgver_upstream}"
-      echo "${pkgbase} ${pkgver_upstream} ${repo}" >> "${state_path}/tobuild"
-      
+      echo "${pkgname} ${pkgver_upstream}" >> "${script_dir}/pkglist/tobuild"
       continue
     fi
 

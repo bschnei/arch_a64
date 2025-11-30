@@ -10,12 +10,14 @@ aarch64-linux-gnu-gdb
 aarch64-linux-gnu-glibc
 aarch64-linux-gnu-linux-api-headers
 syslinux
+x86_energy_perf_policy
 
 # not packaging yet
 gcc-ada
 linux-lts
 linux-lts-docs
 linux-lts-headers
+acpi_call-lts
 openssl-1.1
 vi
 
@@ -23,7 +25,7 @@ vi
 agda
 agda-stdlib
 cabal-fmt
-cabal-instal
+cabal-install
 cabal-plan
 ghc
 ghc-libs
@@ -35,3 +37,15 @@ lib32-gcc-libs
 lib32-glibc
 lib32-rust-libs
 sigrok-firmware-fx2lafw
+linux-hardened
+linux-hardened-docs
+linux-hardened-headers
+linux-rt
+linux-rt-docs
+linux-rt-headers
+linux-rt-lts
+linux-rt-lts-docs
+linux-rt-lts-headers
+linux-zen
+linux-zen-docs
+linux-zen-headers

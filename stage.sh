@@ -103,10 +103,6 @@ for pkg in *.pkg.tar.*; do
   repo-add --remove "${pkgrepo_path}/${pkgrepo}-staging.db.tar.gz" "${pkgrepo_path}/${pkg}"
 done
 
-# remove from tobuild list 
-pattern=$(echo "${pkgname}" | sed 's/+/\\+/g')
-sed -i "/^${pattern} ${pkgver} ${pkgrepo}$/d" "${state_path}/tobuild"
-
 # remove build artifacts
 cd .. || exit
 rm -rf -- "${pkgbase}"
