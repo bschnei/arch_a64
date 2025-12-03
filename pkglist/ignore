@@ -33,6 +33,7 @@ ghc-static
 gitit
 
 # not packaging
+galculator
 lib32-gcc-libs
 lib32-glibc
 lib32-rust-libs

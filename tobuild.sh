@@ -57,7 +57,7 @@ for repo in "${repos[@]}"; do
 
     # if behind the x86_64 version, we need to build it
     if [ "${state}" -gt 0 ]; then
-      echo "${pkgname} ${pkgver_upstream}" >> "${script_dir}/pkglist/tobuild"
+      echo "${pkgname}" >> "${script_dir}/pkglist/outdated"
       continue
     fi
 
