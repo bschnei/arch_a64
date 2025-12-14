@@ -6,7 +6,8 @@ readonly script_dir
 state_path="${script_dir}/state"
 readonly state_path
 
-rm -f -- ${state_path}/missing
+# remove any old missing pkglist
+rm -f "${script_dir}/pkglist/missing"
 
 repos=("core" "extra")
 for repo in "${repos[@]}"; do
@@ -31,7 +32,7 @@ for repo in "${repos[@]}"; do
     latest=$(echo "${released}" | grep -E -m 1 "^${pattern}-[^-]+-[^-]+$" | sed -E "s/^${pattern}-//")
 
     if [ -z "${latest}" ]; then
-      echo "${pkgname}" >> "${state_path}/missing"
+      echo "${pkgname}" >> "${script_dir}/pkglist/missing"
     fi
 
   done <<< "${upstream}"

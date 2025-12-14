@@ -8,8 +8,8 @@ readonly script_dir
 state_path="${script_dir}/state"
 readonly state_path
 
-# remove any old tobuild list
-rm -f "${script_dir}/pkglist/tobuild"
+# remove any old outdated pkglist
+rm -f "${script_dir}/pkglist/outdated"
 
 echo "Looking for outdated packages..."
 

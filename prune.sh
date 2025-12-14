@@ -28,7 +28,8 @@ for repo in "${repos[@]}"; do
 
     # if our package is not found in the upstream repo, we need to remove
     if [ -z "${pkgver_upstream}" ]; then
-      # TODO: create exception for any aarch64-only packages
+      # don't prune aarch64-only packages
+      if grep -Fxq "${pkgname}" "${script_dir}/pkglist/whitelist"; then continue; fi
       toremove+=("${repo} ${pkgname}")
     fi
 

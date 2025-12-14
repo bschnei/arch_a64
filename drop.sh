@@ -24,6 +24,3 @@ find "${pkgrepo_path}/${pkgrepo}/" -type f -regextype posix-extended -regex ".*/
 
 rm -rf "${srcrepos_path}/${pkgname}"
  
-# remove from tobuild list 
-pattern=$(echo "${pkgname}" | sed 's/+/\\+/g')
-sed -i "/^${pattern}/d" "${state_path}/tobuild"
