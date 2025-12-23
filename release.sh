@@ -61,7 +61,7 @@ while IFS= read -r line; do
 
   rsync -av --remove-source-files ${src} ${dest}/
   pkgfile="${dest}/${pkgname}-${pkgver}-*.pkg.tar.zst"
-  repo-add --remove "${dest}/${pkgrepo}.db.tar.gz" ${pkgfile}
+  repo-add --new --remove "${dest}/${pkgrepo}.db.tar.gz" ${pkgfile}
   repo-remove "${dest}-staging/${pkgrepo}-staging.db.tar.gz" "${pkgname}"
 
 done <<< "${releases}"
