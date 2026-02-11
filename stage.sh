@@ -95,7 +95,13 @@ SOURCE_DATE_EPOCH=$(date +%s)
 export SOURCE_DATE_EPOCH
 
 # build
-if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c -- --ignorearch; then exit; fi
+# TODO: refactor this mess :)
+if grep -q "^arch=.*aarch64" PKGBUILD; then
+  if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c; then exit; fi
+else
+  if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c -- --ignorearch; then exit; fi
+fi
+
 
 # add built packages to staging repo
 for pkg in *.pkg.tar.*; do
