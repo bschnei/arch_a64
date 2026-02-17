@@ -96,7 +96,8 @@ export SOURCE_DATE_EPOCH
 
 # build
 # TODO: refactor this mess :)
-if grep -q "^arch=.*aarch64" PKGBUILD; then
+if sed -n '/^arch/,/)/p' PKGBUILD | grep -q aarch64; then
+
   if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c; then exit; fi
 else
   if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c -- --ignorearch; then exit; fi
