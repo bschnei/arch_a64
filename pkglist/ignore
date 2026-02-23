@@ -1,6 +1,12 @@
 # needs work
 kodi
 
+# big?
+composable-kernel
+
+# check takes forever
+meilisearch
+
 # not relevant on aarch64
 amd-ucode
 intel-ucode
@@ -36,6 +42,7 @@ gitit
 galculator
 lib32-gcc-libs
 lib32-glibc
+lib32-libltdl
 lib32-rust-libs
 sigrok-firmware-fx2lafw
 linux-hardened
