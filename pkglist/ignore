@@ -7,6 +7,15 @@ composable-kernel
 # check takes forever
 meilisearch
 
+# check() seems to take forever
+cargo-maelstrom
+maelstrom-broker
+maelstrom-client
+maelstrom-go-test
+maelstrom-pytest
+maelstrom-run
+maelstrom-worker
+
 # not relevant on aarch64
 amd-ucode
 intel-ucode
@@ -28,8 +37,10 @@ openssl-1.1
 vi
 
 # haskell related (no intention to package)
+arch-hs
 agda
 agda-stdlib
+alex
 cabal-fmt
 cabal-install
 cabal-plan
