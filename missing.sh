@@ -9,6 +9,8 @@ readonly state_path
 # remove any old missing pkglist
 rm -f "${script_dir}/pkglist/missing"
 
+printf "%s" "Building pkglist/missing..."
+
 repos=("core" "extra")
 for repo in "${repos[@]}"; do
 
@@ -19,9 +21,9 @@ for repo in "${repos[@]}"; do
   while IFS= read -r pkginfo; do
 
     pkgname=$(echo "${pkginfo}" | cut -d ' ' -f 1)
-    pkgver=$(echo "${pkginfo}" | cut -d ' ' -f 2)
-    pkgbase=$(echo "${pkginfo}" | cut -d ' ' -f 3)
-    pkgarch=$(echo "${pkginfo}" | cut -d ' ' -f 4)
+    #pkgver=$(echo "${pkginfo}" | cut -d ' ' -f 2)
+    #pkgbase=$(echo "${pkginfo}" | cut -d ' ' -f 3)
+    #pkgarch=$(echo "${pkginfo}" | cut -d ' ' -f 4)
 
     if grep -Fxq "${pkgname}" "${script_dir}/pkglist/ignore"; then continue; fi
 
@@ -39,3 +41,4 @@ for repo in "${repos[@]}"; do
 
 done
 
+printf "%s\n" "done!"

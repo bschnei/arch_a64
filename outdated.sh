@@ -11,10 +11,7 @@ readonly state_path
 # remove any old outdated pkglist
 rm -f "${script_dir}/pkglist/outdated"
 
-echo "Looking for outdated packages..."
-
-pkgbases=()
-pkgvers=()
+printf "%s" "Building pkglist/outdated..."
 
 repos=("core" "extra")
 for repo in "${repos[@]}"; do
@@ -46,6 +43,9 @@ for repo in "${repos[@]}"; do
     # skip 'any' packages
     if [[ "${pkgarch}" == "any" ]]; then continue; fi
 
+    # skip packages on hold pkglist
+    if grep -Fxq "${pkgname}" "${script_dir}/pkglist/hold"; then continue; fi
+
     # compare upstream with what is released
     state=$(vercmp "${pkgver_upstream}" "${pkgver_released}")
     
@@ -61,10 +61,8 @@ for repo in "${repos[@]}"; do
       continue
     fi
 
-    # if we made it this far we have a pkgver newer than upstream
-    #echo "  I ${pkgname} ${pkgver_released} ahead of upstream (${pkgver_upstream})"
-
   done <<< "${released}"
 
 done
 
+printf "%s\n" "done!"

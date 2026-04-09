@@ -1,10 +1,14 @@
 # needs work
 kodi
 
+# needs a lot of storage to build
+owl-lisp
+
 # big?
 composable-kernel
 
 # check takes forever
+python-mpi4py
 meilisearch
 
 # check() seems to take forever
@@ -19,11 +23,6 @@ maelstrom-worker
 # not relevant on aarch64
 amd-ucode
 intel-ucode
-aarch64-linux-gnu-binutils
-aarch64-linux-gnu-gcc
-aarch64-linux-gnu-gdb
-aarch64-linux-gnu-glibc
-aarch64-linux-gnu-linux-api-headers
 syslinux
 x86_energy_perf_policy
 
@@ -34,7 +33,6 @@ linux-lts-docs
 linux-lts-headers
 acpi_call-lts
 openssl-1.1
-vi
 
 # haskell related (no intention to package)
 arch-hs

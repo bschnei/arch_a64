@@ -27,14 +27,14 @@ git checkout aarch64
 git rebase -X ours main aarch64
 updpkgsums
 
-if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c -- --ignorearch --nobuild; then exit; fi
+if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c -- --nobuild; then exit; fi
 
 latest=$(ls linux-*.tar.xz | sed 's/linux-//' | sed 's/.tar.xz//')
 
-cp -- "${chroot_path}/ben/build/${pkgname}/src/linux-${latest}/.config" config.arm64
+cp -- "${chroot_path}/ben/build/${pkgname}/src/linux-${latest}/.config" config.aarch64
 updpkgsums
 git commit --all --amend --no-edit
-if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -- --ignorearch; then exit; fi
+if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging"; then exit; fi
 git push --force
 
 # add to staging package repo
