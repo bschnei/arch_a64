@@ -1,7 +1,11 @@
-# needs work
-kodi
-
 # needs a lot of storage to build
+electron31
+electron34
+electron35
+electron36
+electron37
+electron38
+electron39
 owl-lisp
 
 # big?
@@ -20,13 +24,9 @@ maelstrom-pytest
 maelstrom-run
 maelstrom-worker
 
-# not relevant on aarch64
-amd-ucode
-intel-ucode
-syslinux
-x86_energy_perf_policy
-
 # not packaging yet
+dmd
+dmd-docs
 gcc-ada
 linux-lts
 linux-lts-docs
@@ -35,17 +35,82 @@ acpi_call-lts
 openssl-1.1
 
 # haskell related (no intention to package)
-arch-hs
 agda
 agda-stdlib
 alex
+allure
+arbtt
+arch-hs
+bnfc
+c2hs
 cabal-fmt
 cabal-install
 cabal-plan
+cbor-tool
+cgrep
+clash-ghc
+cryptol
+darcs
+dhall
+dhall-bash
+dhall-docs
+dhall-json
+dhall-lsp-server
+dhall-yaml
+dice
 ghc
 ghc-libs
 ghc-static
+git-annex
+git-repair
 gitit
+glirc
+happy
+hasktags
+hedgewars
+hindent
+hledger
+hledger-iadd
+hledger-ui
+hledger-web
+hlint
+hoogle
+hopenpgp-tools
+hslua-cli
+idris
+ihaskell
+kmonad
+mighttpd2
+misfortune
+pandoc-cli
+pandoc-crossref
+pandoc-plot
+postgrest
+shellcheck
+stack
+stylish-haskell
+taffybar
+tamarin-prover
+unlambda
+uusi
+xmobar
+xmonad
+xmonad-contrib
+xmonad-dbus
+xmonad-extras
+xmonad-utils
+
+# not relevant on aarch64
+aarch64-linux-gnu-binutils
+aarch64-linux-gnu-gcc
+aarch64-linux-gnu-gdb
+aarch64-linux-gnu-glibc
+aarch64-linux-gnu-linux-api-headers
+amd-ucode
+intel-ucode
+iucode-tool
+syslinux
+x86_energy_perf_policy
 
 # not packaging
 galculator

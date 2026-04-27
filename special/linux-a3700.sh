@@ -26,7 +26,7 @@ git clone "git@github.com:bschnei/${pkgname}.git"
 cd "${pkgname}" || exit
 
 # get the new sha256sum from upstream
-new_sha256sum=$(curl -s "https://cdn.kernel.org/pub/linux/kernel/v6.x/sha256sums.asc" | grep linux-${latest}.tar.xz | awk '{print $1}')
+new_sha256sum=$(curl -s "https://cdn.kernel.org/pub/linux/kernel/v7.x/sha256sums.asc" | grep linux-${latest}.tar.xz | awk '{print $1}')
 readonly new_sha256sum
 
 # modify the PKGBUILD

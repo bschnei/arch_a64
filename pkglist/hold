@@ -1,13 +1,18 @@
 # takes a long time to build
 chromium
 
+# https://github.com/ornladios/ADIOS2/issues/5005
+adios2
+
 # check failing
+# https://github.com/OpenMathLib/OpenBLAS/issues/5708
 blas64-openblas
 blas-openblas
 openblas
 openblas64
 
-# csound-sys problem
+# csound-sys problem--should be fixed in 0.15.2
+# https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs/-/merge_requests/2985
 gst-plugin-aws
 gst-plugin-cdg
 gst-plugin-claxon

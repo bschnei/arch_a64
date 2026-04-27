@@ -14,6 +14,7 @@ for repo in "${repos[@]}"; do
     --itemize-changes \
     --copy-links \
     --times \
+    --exclude=aarch64-linux-gnu-* \
     --exclude=amd-ucode* \
     --exclude=intel-ucode* \
     --exclude=sigrok-firmware-fx2lafw-* \
