@@ -1,3 +1,6 @@
+# seems to need +crc instruction set to build
+dpdk
+
 # needs a lot of storage to build
 electron31
 electron34
