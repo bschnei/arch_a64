@@ -1,6 +1,12 @@
 # seems to need +crc instruction set to build
 dpdk
 
+# needs >80GB memory to build
+ginkgo-hpc
+ginkgo-hpc-cuda
+ginkgo-hpc-docs
+ginkgo-hpc-hip
+
 # needs a lot of storage to build
 electron31
 electron34
@@ -9,6 +15,7 @@ electron36
 electron37
 electron38
 electron39
+hipblaslt
 owl-lisp
 
 # big?
