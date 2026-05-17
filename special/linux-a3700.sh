@@ -48,8 +48,8 @@ git push --tags
 
 # add to aur package repo
 for pkg in *.pkg.tar.*; do
-  mv "${pkg}" "${pkgrepos_path}/aur"
-  repo-add --remove "${pkgrepos_path}/aur/aur.db.tar.gz" "${pkgrepos_path}/aur/${pkg}"
+  mv "${pkg}" "${pkgrepos_path}/forge"
+  repo-add --remove "${pkgrepos_path}/forge/forge.db.tar.gz" "${pkgrepos_path}/forge/${pkg}"
 done
 
 # remove build artifacts
