@@ -1,3 +1,7 @@
+# csound-sys crate does not build on aarch64
+# https://github.com/neithanmo/csound-rs/issues/9#issuecomment-4041848258
+gst-plugin-csound
+
 # seems to need +crc instruction set to build
 dpdk
 
@@ -15,6 +19,7 @@ electron36
 electron37
 electron38
 electron39
+electron40
 hipblaslt
 owl-lisp
 
@@ -23,7 +28,6 @@ composable-kernel
 
 # check takes forever
 python-mpi4py
-meilisearch
 
 # check() seems to take forever
 cargo-maelstrom
