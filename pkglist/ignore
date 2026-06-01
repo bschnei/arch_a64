@@ -26,8 +26,9 @@ owl-lisp
 # big?
 composable-kernel
 
-# check takes forever
-python-mpi4py
+# takes forever to build
+firefox-developer-edition
+qsv
 
 # check() seems to take forever
 cargo-maelstrom
@@ -46,7 +47,6 @@ linux-lts
 linux-lts-docs
 linux-lts-headers
 acpi_call-lts
-openssl-1.1
 
 # haskell related (no intention to package)
 agda
@@ -123,6 +123,7 @@ aarch64-linux-gnu-linux-api-headers
 amd-ucode
 intel-ucode
 iucode-tool
+qemu-vmsr-helper
 syslinux
 x86_energy_perf_policy
 

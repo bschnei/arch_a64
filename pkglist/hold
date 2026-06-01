@@ -1,5 +1,18 @@
 # work, but take a long time to build
+aspnet-runtime-8.0
+aspnet-runtime-9.0
+aspnet-targeting-pack-8.0
+aspnet-targeting-pack-9.0
+dotnet-runtime-8.0
+dotnet-runtime-9.0
+dotnet-sdk-8.0
+dotnet-sdk-9.0
+dotnet-source-built-artifacts-8.0
+dotnet-source-built-artifacts-9.0
+dotnet-targeting-pack-8.0
+dotnet-targeting-pack-9.0
 chromium
+firefox
 libreoffice-fresh
 libreoffice-fresh-sdk
 libreoffice-still
