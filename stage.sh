@@ -30,7 +30,7 @@ readonly pkgarch
 if [ "${pkgarch}" == "any" ]; then
 
   rsync -Lavh "rsync://berlin.mirror.pkgbuild.com/packages/${pkgrepo}/os/x86_64/${pkgname}-${pkgver}-any.pkg.tar.*" "${pkgrepo_path}/"
-  repo-add --remove "${pkgrepo_path}/${pkgrepo}-staging.db.tar.gz" "${pkgrepo_path}/${pkgname}-${pkgver}-any.pkg.tar.zst"
+  repo-add --remove "${pkgrepo_path}/${pkgrepo}-staging.db.tar.zst" "${pkgrepo_path}/${pkgname}-${pkgver}-any.pkg.tar.zst"
   exit
 
 fi
@@ -107,7 +107,7 @@ fi
 # add built packages to staging repo
 for pkg in *.pkg.tar.*; do
   mv "${pkg}" "${pkgrepo_path}"
-  repo-add --remove "${pkgrepo_path}/${pkgrepo}-staging.db.tar.gz" "${pkgrepo_path}/${pkg}"
+  repo-add --remove "${pkgrepo_path}/${pkgrepo}-staging.db.tar.zst" "${pkgrepo_path}/${pkg}"
 done
 
 # remove build artifacts

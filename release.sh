@@ -21,10 +21,10 @@ for repo in "${repos[@]}"; do
  
   # rebuild staging database
   rm "${pkgrepo_path}/${repo}-staging/${repo}"-staging.*
-  repo-add "${pkgrepo_path}/${repo}-staging/${repo}-staging.db.tar.gz"
+  repo-add "${pkgrepo_path}/${repo}-staging/${repo}-staging.db.tar.zst"
 
   # update the release database
   pkglist=$(printf "${pkgrepo_path}/${repo}/%s " "${pkgfiles[@]}")
-  repo-add --remove -p "${pkgrepo_path}/${repo}/${repo}.db.tar.gz" ${pkglist[@]}
+  repo-add --remove -p "${pkgrepo_path}/${repo}/${repo}.db.tar.zst" ${pkglist[@]}
 
 done

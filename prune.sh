@@ -14,7 +14,7 @@ for repo in "${repos[@]}"; do
 
   # load the state of the repos from disk
   upstream=$(< "${state_path}/${repo}")
-  released=$(tar -tvzf "${script_dir}/pkgrepos/${repo}/${repo}.db.tar.gz" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
+  released=$(tar -tvzf "${script_dir}/pkgrepos/${repo}/${repo}.db.tar.zst" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
 
   # for each package in ${released}...
   while IFS= read -r pkg; do
@@ -50,7 +50,7 @@ printf "\n"
 for item in "${toremove[@]}"; do
   pkgrepo=$(echo "${item}" | cut -d ' ' -f 1)
   pkgname=$(echo "${item}" | cut -d ' ' -f 2)
-  repo-remove "${pkgrepo_path}/${pkgrepo}/${pkgrepo}.db.tar.gz" "${pkgname}"
+  repo-remove "${pkgrepo_path}/${pkgrepo}/${pkgrepo}.db.tar.zst" "${pkgname}"
   find "${pkgrepo_path}/${pkgrepo}/" -type f -regextype posix-extended -regex ".*/${pkgname}-[^-]+-[^-]+-[^-]+.pkg.tar.zst" -delete
   find "${pkgrepo_path}/${pkgrepo}/" -type f -regextype posix-extended -regex ".*/${pkgname}-[^-]+-[^-]+-[^-]+.pkg.tar.zst.sig" -delete
 done

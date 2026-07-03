@@ -11,15 +11,30 @@ dotnet-source-built-artifacts-8.0
 dotnet-source-built-artifacts-9.0
 dotnet-targeting-pack-8.0
 dotnet-targeting-pack-9.0
+
 chromium
 firefox
+
 libreoffice-fresh
 libreoffice-fresh-sdk
 libreoffice-still
 libreoffice-still-sdk
 
-# seems to need >96GB RAM to build?!?
-waylock
+ollama
+ollama-cuda
+ollama-docs
+ollama-rocm
+ollama-vulkan
 
-# compile error
-spirv-cross
+# taking forever to build
+pycharm-community-edition
+
+# 0.9.r463 hangs in check()
+vis
+vis-lexers
+
+# check() failing
+wasm-tools
+
+# 1.6.0-1 seems to need >96GB RAM to build?!?
+waylock

@@ -18,7 +18,7 @@ else
   pkgrepo=$(get_pkgrepo "${pkgname}")
 fi
 
-repo-remove "${pkgrepo_path}/${pkgrepo}/${pkgrepo}.db.tar.gz" "${pkgname}"
+repo-remove "${pkgrepo_path}/${pkgrepo}/${pkgrepo}.db.tar.zst" "${pkgname}"
 find "${pkgrepo_path}/${pkgrepo}/" -type f -regextype posix-extended -regex ".*/${pkgname}-[^-]+-[^-]+-[^-]+.pkg.tar.zst" -delete
 find "${pkgrepo_path}/${pkgrepo}/" -type f -regextype posix-extended -regex ".*/${pkgname}-[^-]+-[^-]+-[^-]+.pkg.tar.zst.sig" -delete
 

@@ -16,7 +16,7 @@ for repo in "${repos[@]}"; do
 
   # load data from disk
   upstream=$(< "${state_path}/${repo}")
-  released=$(tar -tvzf "${script_dir}/pkgrepos/${repo}/${repo}.db.tar.gz" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
+  released=$(tar -tvzf "${script_dir}/pkgrepos/${repo}/${repo}.db.tar.zst" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
 
   while IFS= read -r pkginfo; do
 

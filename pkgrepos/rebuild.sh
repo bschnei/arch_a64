@@ -15,5 +15,5 @@ pkgrepo_path="${script_dir}/${repo}"
 readonly pkgrepo_path
 
 rm "${pkgrepo_path}/${repo}."*
-repo-add "${pkgrepo_path}/${repo}.db.tar.gz" "${pkgrepo_path}/"*.pkg.tar.zst
+repo-add "${pkgrepo_path}/${repo}.db.tar.zst" "${pkgrepo_path}/"*.pkg.tar.zst
 

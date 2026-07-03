@@ -10,6 +10,7 @@ ginkgo-hpc
 ginkgo-hpc-cuda
 ginkgo-hpc-docs
 ginkgo-hpc-hip
+ginkgo-hpc-sycl
 
 # needs a lot of storage to build
 electron31
@@ -20,6 +21,8 @@ electron37
 electron38
 electron39
 electron40
+electron41
+electron42
 hipblaslt
 owl-lisp
 
@@ -38,6 +41,8 @@ maelstrom-go-test
 maelstrom-pytest
 maelstrom-run
 maelstrom-worker
+python-mpi4py
+urh
 
 # not packaging yet
 dmd
@@ -124,6 +129,8 @@ amd-ucode
 intel-ucode
 iucode-tool
 qemu-vmsr-helper
+rust-aarch64-gnu
+rust-aarch64-musl
 syslinux
 x86_energy_perf_policy
 

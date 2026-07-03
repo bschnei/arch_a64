@@ -40,7 +40,7 @@ for repo in "${repos[@]}"; do
     p_name="${entry%-*-*}"
     p_ver="${entry#$p_name-}"
     staged["$p_name"]="$p_ver"
-  done < <(tar -tf "${script_dir}/pkgrepos/${repo}-staging/${repo}-staging.db.tar.gz" | grep '/$')
+  done < <(tar -tf "${script_dir}/pkgrepos/${repo}-staging/${repo}-staging.db.tar.zst" | grep '/$')
 
   # for each package released
   while read -r entry; do
@@ -67,7 +67,7 @@ for repo in "${repos[@]}"; do
       fi
     fi
 
-  done < <(tar -tf "${script_dir}/pkgrepos/${repo}/${repo}.db.tar.gz" | grep '/$')
+  done < <(tar -tf "${script_dir}/pkgrepos/${repo}/${repo}.db.tar.zst" | grep '/$')
 
   # cleanup arrays for next repo
   unset pkgver pkgarch staged

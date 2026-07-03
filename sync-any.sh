@@ -23,6 +23,6 @@ for repo in "${repos[@]}"; do
   if [ ${#pkgfiles[@]} -eq 0 ]; then continue; fi
 
   pkglist=$(printf "${pkgrepo_path}/${repo}/%s " "${pkgfiles[@]}")
-  repo-add --remove -p "${pkgrepo_path}/${repo}/${repo}.db.tar.gz" ${pkglist[@]}
+  repo-add --remove -p "${pkgrepo_path}/${repo}/${repo}.db.tar.zst" ${pkglist[@]}
 
 done
