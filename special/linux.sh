@@ -40,7 +40,7 @@ git push --force
 # add to staging package repo
 for pkg in *.pkg.tar.*; do
   mv "${pkg}" "${pkgrepos_path}/core-staging"
-  repo-add --remove "${pkgrepos_path}/core-staging/core-staging.db.tar.gz" "${pkgrepos_path}/core-staging/${pkg}"
+  repo-add --remove "${pkgrepos_path}/core-staging/core-staging.db.tar.zst" "${pkgrepos_path}/core-staging/${pkg}"
 done
 
 # remove build artifacts
