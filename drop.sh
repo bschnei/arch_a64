@@ -6,8 +6,7 @@ readonly script_dir
 . "$(dirname "$(readlink -e "$0")")/functions"
 
 pkgrepo_path="${script_dir}/pkgrepos"
-srcrepos_path="${script_dir}/srcrepos"
-state_path="${script_dir}/state"
+srcrepos_path="/mnt/storage/public/arch/build"
 readonly pkgrepo_path srcrepos_path
 
 pkgname="${1}"

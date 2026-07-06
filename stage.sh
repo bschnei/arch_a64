@@ -6,7 +6,7 @@ readonly script_dir
 . "$(dirname "$(readlink -e "$0")")/functions"
 
 chroot_path="${script_dir}/chroot"
-srcrepos_path="${script_dir}/srcrepos"
+srcrepos_path="/mnt/storage/public/arch/build"
 pkgrepos_path="${script_dir}/pkgrepos"
 state_path="${script_dir}/state"
 readonly chroot_path srcrepos_path pkgrepos_path state_path
@@ -109,8 +109,3 @@ for pkg in *.pkg.tar.*; do
   mv "${pkg}" "${pkgrepo_path}"
   repo-add --remove "${pkgrepo_path}/${pkgrepo}-staging.db.tar.zst" "${pkgrepo_path}/${pkg}"
 done
-
-# remove build artifacts
-cd .. || exit
-rm -rf -- "${pkgbase}"
-
