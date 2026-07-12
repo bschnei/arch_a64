@@ -4,7 +4,7 @@ script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(re
 readonly script_dir
 
 chroot_path="${script_dir}/../chroot"
-srcrepos_path="${script_dir}/../srcrepos"
+srcrepos_path="${script_dir}/../build"
 pkgrepos_path=$(realpath "${script_dir}/../pkgrepos")
 readonly chroot_path srcrepos_path pkgrepos_path 
 
