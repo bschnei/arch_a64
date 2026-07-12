@@ -6,7 +6,7 @@ readonly script_dir
 . "$(dirname "$(readlink -e "$0")")/functions"
 
 chroot_path="${script_dir}/chroot"
-srcrepos_path="/mnt/storage/public/arch/build"
+srcrepos_path="${script_dir}/build"
 pkgrepos_path="${script_dir}/pkgrepos"
 state_path="${script_dir}/state"
 readonly chroot_path srcrepos_path pkgrepos_path state_path
@@ -84,9 +84,6 @@ else
   git -c advice.detachedHead=false checkout "${gitref}"
 fi
 
-# update the root chroot
-arch-nspawn "${chroot_path}/root" pacman -Syu --noconfirm
-
 # import any signing keys
 gpg --quiet --import keys/pgp/*.asc > /dev/null 2>&1
 
@@ -95,14 +92,11 @@ SOURCE_DATE_EPOCH=$(date +%s)
 export SOURCE_DATE_EPOCH
 
 # build
-# TODO: refactor this mess :)
-if sed -n '/^arch/,/)/p' PKGBUILD | grep -q aarch64; then
-
-  if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c; then exit; fi
-else
-  if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c -- --ignorearch; then exit; fi
+if ! sed -n '/^arch/,/)/p' PKGBUILD | grep -q aarch64; then
+  add-arch.sh
 fi
 
+if ! pkgctl build --arch aarch64 -s; then exit; fi
 
 # add built packages to staging repo
 for pkg in *.pkg.tar.*; do

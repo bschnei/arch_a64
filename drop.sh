@@ -6,8 +6,7 @@ readonly script_dir
 . "$(dirname "$(readlink -e "$0")")/functions"
 
 pkgrepo_path="${script_dir}/pkgrepos"
-srcrepos_path="/mnt/storage/public/arch/build"
-readonly pkgrepo_path srcrepos_path
+readonly pkgrepo_path
 
 pkgname="${1}"
 
@@ -20,6 +19,3 @@ fi
 repo-remove "${pkgrepo_path}/${pkgrepo}/${pkgrepo}.db.tar.zst" "${pkgname}"
 find "${pkgrepo_path}/${pkgrepo}/" -type f -regextype posix-extended -regex ".*/${pkgname}-[^-]+-[^-]+-[^-]+.pkg.tar.zst" -delete
 find "${pkgrepo_path}/${pkgrepo}/" -type f -regextype posix-extended -regex ".*/${pkgname}-[^-]+-[^-]+-[^-]+.pkg.tar.zst.sig" -delete
-
-rm -rf "${srcrepos_path}/${pkgname}"
- 
