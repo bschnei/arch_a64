@@ -14,7 +14,7 @@ for repo in "${repos[@]}"; do
 
   # load the state of the repos from disk
   upstream=$(< "${state_path}/${repo}")
-  released=$(tar -tvzf "${script_dir}/pkgrepos/${repo}/${repo}.db.tar.zst" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
+  released=$(tar -tvf "${script_dir}/pkgrepos/${repo}/${repo}.db.tar.zst" | grep -e "^d" | awk '{print $6}' | sed 's/.$//')
 
   # for each package in ${released}...
   while IFS= read -r pkg; do
