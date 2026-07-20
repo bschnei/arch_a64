@@ -27,6 +27,9 @@ git checkout aarch64
 git rebase -X ours main aarch64
 updpkgsums
 
+# update the root chroot
+arch-nspawn "${chroot_path}/root" pacman -Syu --noconfirm
+
 if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c -- --nobuild; then exit; fi
 
 latest=$(ls linux-*.tar.xz | sed 's/linux-//' | sed 's/.tar.xz//')

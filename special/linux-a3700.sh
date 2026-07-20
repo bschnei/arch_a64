@@ -34,6 +34,9 @@ sed -i "s|^pkgver=.*$|pkgver=${latest}|g" PKGBUILD
 sed -i "s|^pkgrel=.*$|pkgrel=1|g" PKGBUILD
 sed -i "s|^sha256sums=(.*$|sha256sums=('${new_sha256sum}'|g" PKGBUILD
 
+# update the root chroot
+arch-nspawn "${chroot_path}/root" pacman -Syu --noconfirm
+
 # update config and its hash
 if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging" -c -- --nobuild; then exit; fi
 cp -- "${chroot_path}/ben/build/${pkgname}/src/linux-${latest}/.config" config
