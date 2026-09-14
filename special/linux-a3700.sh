@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
-script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit; pwd)
+script_dir=$(
+  cd "$(dirname "${BASH_SOURCE[0]}")" || exit
+  cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit
+  pwd
+)
 readonly script_dir
 
 chroot_path="${script_dir}/../chroot"
 srcrepos_path="${script_dir}/../build"
 pkgrepos_path=$(realpath "${script_dir}/../pkgrepos")
-readonly chroot_path srcrepos_path pkgrepos_path 
+readonly chroot_path srcrepos_path pkgrepos_path
 
 pkgname=linux-a3700
 readonly pkgname
@@ -15,14 +19,14 @@ latest=$(curl -s https://www.kernel.org/releases.json | jq -r '.latest_stable.ve
 current=$(pacman -Si ${pkgname} | grep -Po '^Version\s*: \K.+')
 readonly latest current
 
-if (( $(vercmp "${latest}" "${current%-*}") <= 0 )); then
+if (($(vercmp "${latest}" "${current%-*}") <= 0)); then
   echo "${pkgname} is up-to-date (${current%-*})"
   exit 0
 fi
 
 cd "${srcrepos_path}" || exit
 rm -rf -- "${pkgname}"
-git clone "git@github.com:bschnei/${pkgname}.git"
+git clone "ssh://git@git.bens.haus/ben/${pkgname}.git"
 cd "${pkgname}" || exit
 
 # get the new sha256sum from upstream
@@ -58,4 +62,3 @@ done
 # remove build artifacts
 cd "${srcrepos_path}" || exit
 rm -rf -- "${pkgname}"
-
