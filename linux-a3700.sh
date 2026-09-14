@@ -7,9 +7,9 @@ script_dir=$(
 )
 readonly script_dir
 
-chroot_path="${script_dir}/../chroot"
-srcrepos_path="${script_dir}/../build"
-pkgrepos_path=$(realpath "${script_dir}/../pkgrepos")
+chroot_path="${script_dir}/chroot"
+srcrepos_path="${script_dir}/build"
+pkgrepos_path=$(realpath "${script_dir}/pkgrepos")
 readonly chroot_path srcrepos_path pkgrepos_path
 
 pkgname=linux-a3700

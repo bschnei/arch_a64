@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
-script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit; pwd)
+script_dir=$(
+  cd "$(dirname "${BASH_SOURCE[0]}")" || exit
+  cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")" || exit
+  pwd
+)
 readonly script_dir
 
-chroot_path="${script_dir}/../chroot"
-srcrepos_path="${script_dir}/../build"
-pkgrepos_path=$(realpath "${script_dir}/../pkgrepos")
-readonly chroot_path srcrepos_path pkgrepos_path 
+chroot_path="${script_dir}/chroot"
+srcrepos_path="${script_dir}/build"
+pkgrepos_path=$(realpath "${script_dir}/pkgrepos")
+readonly chroot_path srcrepos_path pkgrepos_path
 
 pkgname=linux
 readonly pkgname
@@ -49,4 +53,3 @@ done
 # remove build artifacts
 cd "${srcrepos_path}" || exit
 rm -rf -- "${pkgname}"
-
