@@ -41,15 +41,15 @@ latest=$(ls linux-*.tar.xz | sed 's/linux-//' | sed 's/.tar.xz//')
 cp -- "${chroot_path}/ben/build/${pkgname}/src/linux-${latest}/.config" config.aarch64
 updpkgsums
 git commit --all --amend --no-edit
-if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging"; then exit; fi
+#if ! makechrootpkg -r "${chroot_path}" -D "${pkgrepos_path}/core-staging" -D "${pkgrepos_path}/extra-staging"; then exit; fi
 git push --force
 
 # add to staging package repo
-for pkg in *.pkg.tar.*; do
-  mv "${pkg}" "${pkgrepos_path}/core-staging"
-  repo-add --remove "${pkgrepos_path}/core-staging/core-staging.db.tar.zst" "${pkgrepos_path}/core-staging/${pkg}"
-done
+#for pkg in *.pkg.tar.*; do
+#  mv "${pkg}" "${pkgrepos_path}/core-staging"
+#  repo-add --remove "${pkgrepos_path}/core-staging/core-staging.db.tar.zst" "${pkgrepos_path}/core-staging/${pkg}"
+#done
 
 # remove build artifacts
-cd "${srcrepos_path}" || exit
-rm -rf -- "${pkgname}"
+#cd "${srcrepos_path}" || exit
+#rm -rf -- "${pkgname}"
